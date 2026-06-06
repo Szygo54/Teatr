@@ -50,7 +50,7 @@ try {
         h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
         .spektakl-info { color: #aaaaaa; margin-bottom: 40px; font-size: 15px; }
         .cena-akcent { color: #829356; font-weight: bold; }
-        .logo-img { width: 100%; max-width: 200px; height: auto; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
+        .logo-img { width: 100%; max-width: 120px; height: auto; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
         .scena { background-color: #333; height: 45px; width: 100%; max-width: 850px; margin: 0 auto 40px auto; border-radius: 5px 5px 20px 20px; display: flex; justify-content: center; align-items: center; color: #888; font-weight: bold; font-size: 18px; letter-spacing: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         .sala { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; max-width: 850px; margin: 0 auto; }
         .fotel-label { display: flex; align-items: center; justify-content: center; height: 50px; background-color:rgb(231, 229, 222); color: #1a1a1a; border-radius: 8px 8px 4px 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; }

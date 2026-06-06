@@ -52,8 +52,8 @@ try {
     <meta charset="UTF-8">
     <title>Koszyk - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; box-sizing: border-box; }
-        .logo-img { width: 100%; max-width: 320px; margin-bottom: 40px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px 20px; box-sizing: border-box; }
+        .logo-img { width: 100%; max-width: 120px; margin-bottom: 30px; }
         .podsumowanie { background-color: #262626; padding: 40px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }
         h2 { font-weight: 300; letter-spacing: 2px; margin-top: 0; text-transform: uppercase; }
         h3 { color: #aaaaaa; font-weight: normal; margin-bottom: 20px; }

@@ -3,7 +3,6 @@ session_start();
 require_once 'database.php';
 
 try {
-    // NAPRAWIONE ZAPYTANIE: Łączymy Spektakle z Terminami
     $sql = "SELECT t.id AS termin_id, s.id AS spektakl_id, s.tytul, t.data_wystawienia 
             FROM Terminy t 
             JOIN Spektakle s ON t.spektakl_id = s.id 
@@ -34,40 +33,98 @@ function polskiMiesiacPelny($numerMiesiaca) {
     <title>Kalendarium - Teatr Jura</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        
+        /* --- IDENTYCZNY PASEK NAWIGACJI --- */
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
-        
-        .header-sekcja { text-align: center; margin: 40px 20px; }
-        .kontener-sekcji { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .top-bar .link-akcent { color: #829356; }
+        .top-bar .link-admin { color: #9e4747; } 
+
+        /* --- IDENTYCZNA GÓRA STRONY (z pliku aktorzy.php) --- */
+        .kontener-sekcji { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
-        .separator-miesiaca { font-size: 24px; color: #829356; margin: 40px 0 15px 0; padding-bottom: 5px; border-bottom: 1px solid #444; text-transform: uppercase; letter-spacing: 2px; }
-
-        .lista-spektakli { display: flex; flex-direction: column; gap: 15px; }
-        .wiersz-spektaklu { display: flex; align-items: center; background: #262626; border-radius: 8px; padding: 20px 30px; text-decoration: none; transition: 0.3s; }
-        .wiersz-spektaklu:hover { background: #2f2f2f; transform: translateX(5px); }
-        
-        .w-data { width: 15%; }
-        .w-dzien { font-size: 32px; font-weight: bold; color: #829356; line-height: 1; }
-        .w-miesiac { font-size: 14px; color: #aaa; text-transform: uppercase; }
-        .w-czas { width: 15%; font-size: 18px; color: #ccc; }
-        .w-tytul { width: 45%; }
-        .w-tytul-tekst { font-size: 22px; color: #fff; font-weight: bold; margin: 0; text-transform: uppercase; }
-        
-        .w-akcja { width: 25%; text-align: right; }
-        .btn-kup { display: inline-block; color: #829356; border: 2px solid #829356; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        .wiersz-spektaklu:hover .btn-kup { background: #829356; color: white; }
-
-        .brak-danych { text-align: center; color: #aaa; font-size: 18px; padding: 40px; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
+        .powrot:hover { color: #a4b86c; }
+        
+        /* --- ASCETYCZNY MINIMALIZM (Repertuar) --- */
+        .separator-miesiaca { 
+            font-size: 14px; 
+            color: #666; 
+            margin: 60px 0 10px 0; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid #333; 
+            text-transform: uppercase; 
+            letter-spacing: 4px; 
+            font-weight: normal;
+        }
+
+        .lista-spektakli { display: flex; flex-direction: column; }
+        
+        .wiersz-spektaklu { 
+            display: grid; 
+            grid-template-columns: 80px 1fr auto; 
+            align-items: center; 
+            gap: 40px; 
+            padding: 25px 0; 
+            text-decoration: none; 
+            border-bottom: 1px solid #222;
+            transition: all 0.3s ease;
+        }
+        
+        .w-data { text-align: left; }
+        .w-dzien { font-size: 32px; font-weight: 300; color: #fff; line-height: 1; margin-bottom: 5px; transition: color 0.3s; }
+        .w-miesiac { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        
+        .w-info { display: flex; flex-direction: column; gap: 5px; }
+        .w-czas { font-size: 13px; color: #666; letter-spacing: 1px; }
+        .w-tytul-tekst { font-size: 22px; color: #aaa; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        
+        .w-akcja { text-align: right; }
+        .btn-kup { 
+            display: flex; 
+            align-items: center;
+            color: #666; 
+            text-decoration: none; 
+            font-weight: normal; 
+            text-transform: uppercase; 
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease; 
+        }
+        .btn-kup::after {
+            content: '→';
+            margin-left: 10px;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Interakcje (Hover) - ożywają tylko potrzebne elementy */
+        .wiersz-spektaklu:hover .w-tytul-tekst { color: #fff; }
+        .wiersz-spektaklu:hover .w-dzien { color: #829356; }
+        .wiersz-spektaklu:hover .btn-kup { color: #829356; }
+        .wiersz-spektaklu:hover .btn-kup::after { transform: translateX(8px); color: #829356; }
+
+        .brak-danych { text-align: left; color: #666; font-size: 14px; padding: 40px 0; letter-spacing: 1px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <div><?php if (isset($_SESSION['user_id'])): ?> Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong><?php endif; ?></div>
         <div>
-            <a href="index.php" style="color: #fff;">Strona Główna</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+            <?php endif; ?>
+        </div>
+        <div>
+            <a href="index.php">Strona Główna</a>
+            <a href="spektakle.php">Repertuar</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                <a href="wyloguj.php">Wyloguj</a>
+            <?php else: ?>
+                <a href="logowanie.php">Zaloguj się</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -100,10 +157,12 @@ function polskiMiesiacPelny($numerMiesiaca) {
                             <div class="w-dzien"><?= $dzien ?></div>
                             <div class="w-miesiac"><?= $skrot_miesiaca ?></div>
                         </div>
-                        <div class="w-czas"><?= date('H:i', $timestamp) ?></div>
-                        <div class="w-tytul"><h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3></div>
+                        <div class="w-info">
+                            <div class="w-czas">GODZ. <?= date('H:i', $timestamp) ?></div>
+                            <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
+                        </div>
                         <div class="w-akcja">
-                            <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Kup bilet</a></object>
+                            <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
                         </div>
                     </a>
                 <?php endforeach; ?>

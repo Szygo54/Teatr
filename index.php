@@ -64,18 +64,52 @@ function polskiMiesiac($numerMiesiaca) {
         .hero-tytul { font-size: 42px; color: white; margin: 0 0 10px 0; text-transform: uppercase; }
         .hero-info { color: #ccc; font-size: 16px; }
 
-        /* HARMONOGRAM */
-        .wiersz-spektaklu { display: flex; align-items: center; background: #262626; border-radius: 8px; padding: 20px 30px; margin-bottom: 15px; text-decoration: none; transition: 0.3s; }
-        .wiersz-spektaklu:hover { background: #2f2f2f; }
-        .w-data { width: 15%; }
-        .w-dzien { font-size: 32px; font-weight: bold; color: #829356; line-height: 1; }
-        .w-miesiac { font-size: 14px; color: #aaa; text-transform: uppercase; }
-        .w-czas { width: 15%; font-size: 18px; color: #ccc; }
-        .w-tytul { width: 45%; }
-        .w-tytul-tekst { font-size: 22px; color: #fff; font-weight: bold; margin: 0; text-transform: uppercase; }
-        .w-akcja { width: 25%; text-align: right; }
-        .btn-kup { display: inline-block; color: #829356; border: 2px solid #829356; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        .wiersz-spektaklu:hover .btn-kup { background: #829356; color: white; }
+        /* MINIMALISTYCZNY HARMONOGRAM Z KALENDARIUM */
+        .lista-spektakli { display: flex; flex-direction: column; }
+        
+        .wiersz-spektaklu { 
+            display: grid; 
+            grid-template-columns: 80px 1fr auto; 
+            align-items: center; 
+            gap: 40px; 
+            padding: 25px 0; 
+            text-decoration: none; 
+            border-bottom: 1px solid #222;
+            transition: all 0.3s ease;
+        }
+        
+        .w-data { text-align: left; }
+        .w-dzien { font-size: 32px; font-weight: 300; color: #fff; line-height: 1; margin-bottom: 5px; transition: color 0.3s; }
+        .w-miesiac { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        
+        .w-info { display: flex; flex-direction: column; gap: 5px; }
+        .w-czas { font-size: 13px; color: #666; letter-spacing: 1px; }
+        .w-tytul-tekst { font-size: 22px; color: #aaa; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        
+        .w-akcja { text-align: right; }
+        .btn-kup { 
+            display: flex; 
+            align-items: center;
+            color: #666; 
+            text-decoration: none; 
+            font-weight: normal; 
+            text-transform: uppercase; 
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease; 
+        }
+        .btn-kup::after {
+            content: '→';
+            margin-left: 10px;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Interakcje (Hover) w Harmonogramie */
+        .wiersz-spektaklu:hover .w-tytul-tekst { color: #fff; }
+        .wiersz-spektaklu:hover .w-dzien { color: #829356; }
+        .wiersz-spektaklu:hover .btn-kup { color: #829356; }
+        .wiersz-spektaklu:hover .btn-kup::after { transform: translateX(8px); color: #829356; }
 
         /* PLAKATY */
         .siatka-plakatow { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
@@ -90,10 +124,7 @@ function polskiMiesiac($numerMiesiaca) {
         .siatka-aktorow-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
         .karta-aktora-index { background: #262626; border-radius: 8px; overflow: hidden; text-align: center; }
         .zdjecie-aktora-index { height: 300px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; border-bottom: 3px solid #829356; }
-        
-        /* NOWE: Style dla obrazków w kafelkach aktorów */
         .zdjecie-aktora-index img { width: 100%; height: 100%; object-fit: cover; }
-
         .dane-aktora-index { padding: 15px; }
         .imie-aktora-index { color: #fff; font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; }
         .rola-aktora-index { color: #829356; font-size: 13px; margin: 0; }
@@ -138,16 +169,26 @@ function polskiMiesiac($numerMiesiaca) {
 
     <div class="kontener-sekcji">
         <h2 class="naglowek-sekcji"><a href="kalendarium.php">Kalendarium</a></h2>
-        <?php foreach ($harmonogram as $s): 
-            $ts = strtotime($s['data_wystawienia']);
-        ?>
-            <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
-                <div class="w-data"><div class="w-dzien"><?= date('d', $ts) ?></div><div class="w-miesiac"><?= polskiMiesiac(date('n', $ts)) ?></div></div>
-                <div class="w-czas"><?= date('H:i', $ts) ?></div>
-                <div class="w-tytul"><h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3></div>
-                <div class="w-akcja"><object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Kup bilet</a></object></div>
-            </a>
-        <?php endforeach; ?>
+        
+        <div class="lista-spektakli">
+            <?php foreach ($harmonogram as $s): 
+                $ts = strtotime($s['data_wystawienia']);
+            ?>
+                <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
+                    <div class="w-data">
+                        <div class="w-dzien"><?= date('d', $ts) ?></div>
+                        <div class="w-miesiac"><?= polskiMiesiac(date('n', $ts)) ?></div>
+                    </div>
+                    <div class="w-info">
+                        <div class="w-czas">GODZ. <?= date('H:i', $ts) ?></div>
+                        <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
+                    </div>
+                    <div class="w-akcja">
+                        <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <div class="kontener-sekcji">
