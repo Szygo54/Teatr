@@ -51,7 +51,7 @@ function polskiMiesiac($numerMiesiaca) {
         .top-bar .link-akcent { color: #829356; }
         .top-bar .link-admin { color: #9e4747; } 
 
-        .header-sekcja { text-align: center; margin: 50px 20px 40px 20px; }
+        .header-sekcja { text-align: center; margin: 0px 20px 40px 20px; }
         .podtytul { color: #aaaaaa; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-top: 10px; }
 
         /* UNIWERSALNY KONTENER */
@@ -159,6 +159,12 @@ function polskiMiesiac($numerMiesiaca) {
         .dane-aktora-index { padding: 15px; }
         .imie-aktora-index { color: #fff; font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; }
         .rola-aktora-index { color: #829356; font-size: 13px; margin: 0; letter-spacing: 1px; }
+
+        .logo-teatru {
+            max-width: 100px; /* Możesz zmienić ten rozmiar, jeśli logo będzie za duże lub za małe */
+            height: auto;
+            margin-bottom: -15px;
+        }
     </style>
 </head>
 <body>
@@ -188,6 +194,7 @@ function polskiMiesiac($numerMiesiaca) {
     </div>
 
     <div class="header-sekcja">
+        <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-teatru">
         <h1 style="color: white; font-size: 48px; margin: 0; text-transform: uppercase; letter-spacing: 5px;">Teatr Jura</h1>
         <div class="podtytul">Aktualny repertuar i rezerwacja biletów online</div>
     </div>
