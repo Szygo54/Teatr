@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Cze 02, 2026 at 06:07 PM
+-- Generation Time: Cze 06, 2026 at 09:35 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -144,21 +144,22 @@ INSERT INTO `miejsca` (`id`, `rzad`, `numer`) VALUES
 CREATE TABLE `rezerwacje` (
   `id` int(11) NOT NULL,
   `uzytkownik_id` int(11) NOT NULL,
-  `spektakl_id` int(11) NOT NULL,
+  `termin_id` int(11) NOT NULL,
   `miejsce_id` int(11) NOT NULL,
-  `data_zakupu` timestamp NOT NULL DEFAULT current_timestamp()
+  `data_zakupu` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rezerwacje`
 --
 
-INSERT INTO `rezerwacje` (`id`, `uzytkownik_id`, `spektakl_id`, `miejsce_id`, `data_zakupu`) VALUES
-(1, 1, 2, 3, '2026-06-02 15:46:21'),
-(2, 3, 1, 1, '2026-06-02 15:59:44'),
-(3, 3, 1, 2, '2026-06-02 15:59:44'),
-(4, 3, 2, 4, '2026-06-02 16:03:35'),
-(5, 3, 2, 5, '2026-06-02 16:03:35');
+INSERT INTO `rezerwacje` (`id`, `uzytkownik_id`, `termin_id`, `miejsce_id`, `data_zakupu`) VALUES
+(1, 3, 1, 54, '2026-06-06 21:20:22'),
+(2, 3, 1, 55, '2026-06-06 21:20:22'),
+(3, 3, 1, 42, '2026-06-06 21:26:06'),
+(4, 3, 1, 43, '2026-06-06 21:26:06'),
+(5, 3, 1, 30, '2026-06-06 21:30:21'),
+(6, 3, 1, 32, '2026-06-06 21:30:21');
 
 -- --------------------------------------------------------
 
@@ -168,20 +169,42 @@ INSERT INTO `rezerwacje` (`id`, `uzytkownik_id`, `spektakl_id`, `miejsce_id`, `d
 
 CREATE TABLE `spektakle` (
   `id` int(11) NOT NULL,
-  `tytul` varchar(150) NOT NULL,
+  `tytul` varchar(255) NOT NULL,
   `opis` text DEFAULT NULL,
-  `data_wystawienia` datetime NOT NULL,
-  `cena` decimal(10,2) NOT NULL
+  `cena` decimal(10,2) NOT NULL,
+  `plakat` varchar(255) DEFAULT 'zdjecia/domyslny_plakat.jpg'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `spektakle`
 --
 
-INSERT INTO `spektakle` (`id`, `tytul`, `opis`, `data_wystawienia`, `cena`) VALUES
-(1, 'Wariat i zakonnica', 'Szalona i pełna dowcipu inscenizacja dramatu Witkacego na scenie Teatru Jura.', '2026-07-15 19:00:00', 85.00),
-(2, 'Wesele', 'Klasyczny dramat Stanisława Wyspiańskiego w nowoczesnej odsłonie.', '2026-07-20 18:30:00', 110.00),
-(3, 'Mistrz i Małgorzata', 'Niezwykła opowieść o miłości i wolności w wykonaniu zespołu Teatru Jura.', '2026-07-25 19:00:00', 95.00);
+INSERT INTO `spektakle` (`id`, `tytul`, `opis`, `cena`, `plakat`) VALUES
+(1, 'Wariat i zakonnica', 'Szalona i pełna dowcipu inscenizacja dramatu Witkacego.', 85.00, 'zdjecia/wariat.jpg'),
+(2, 'Wesele', 'Klasyczny dramat Stanisława Wyspiańskiego w nowoczesnym wydaniu.', 110.00, 'zdjecia/wesele.jpg'),
+(3, 'Mistrz i Małgorzata', 'Niezwykła opowieść o miłości i wolności.', 95.00, 'zdjecia/mistrz.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `terminy`
+--
+
+CREATE TABLE `terminy` (
+  `id` int(11) NOT NULL,
+  `spektakl_id` int(11) NOT NULL,
+  `data_wystawienia` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `terminy`
+--
+
+INSERT INTO `terminy` (`id`, `spektakl_id`, `data_wystawienia`) VALUES
+(1, 1, '2026-07-15 19:00:00'),
+(2, 2, '2026-07-20 18:30:00'),
+(3, 2, '2026-07-21 18:30:00'),
+(4, 3, '2026-07-25 19:00:00');
 
 -- --------------------------------------------------------
 
@@ -204,7 +227,8 @@ CREATE TABLE `uzytkownicy` (
 INSERT INTO `uzytkownicy` (`id`, `imie`, `email`, `haslo`, `rola`) VALUES
 (1, 'Jan Kowalski', 'jan@wp.pl', '$2y$10$mC7wS8wV9XpQyE2bZ3uO1eFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtU', 'klient'),
 (2, 'Anna Administrator', 'admin@teatr.pl', '$2y$10$mC7wS8wV9XpQyE2bZ3uO1eFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtU', 'admin'),
-(3, 'Jola', 'wataha_joli@mail.pl', '$2y$10$Xx3gwBPU9ZAXk96oZO.cpe7eU1eYxF5pgJpg9kdRO12V.AcHIu2Ue', 'klient');
+(3, 'Jola Wilk', 'wataha_joli@mail.pl', '$2y$10$Xx3gwBPU9ZAXk96oZO.cpe7eU1eYxF5pgJpg9kdRO12V.AcHIu2Ue', 'admin'),
+(4, 'Jan Kowalski', 'jankowalski@mail.pl', '$2y$10$Xg1lKSE99KakDz7Z9Cjj/esPsAe3VqMRyQ9ASSKzK63P5wtXKmpbS', 'klient');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -221,7 +245,7 @@ ALTER TABLE `miejsca`
 --
 ALTER TABLE `rezerwacje`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unikaj_dubla` (`spektakl_id`,`miejsce_id`),
+  ADD UNIQUE KEY `unikalne_miejsce_w_terminie` (`termin_id`,`miejsce_id`),
   ADD KEY `uzytkownik_id` (`uzytkownik_id`),
   ADD KEY `miejsce_id` (`miejsce_id`);
 
@@ -230,6 +254,13 @@ ALTER TABLE `rezerwacje`
 --
 ALTER TABLE `spektakle`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indeksy dla tabeli `terminy`
+--
+ALTER TABLE `terminy`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `spektakl_id` (`spektakl_id`);
 
 --
 -- Indeksy dla tabeli `uzytkownicy`
@@ -252,7 +283,7 @@ ALTER TABLE `miejsca`
 -- AUTO_INCREMENT for table `rezerwacje`
 --
 ALTER TABLE `rezerwacje`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `spektakle`
@@ -261,10 +292,16 @@ ALTER TABLE `spektakle`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `terminy`
+--
+ALTER TABLE `terminy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `uzytkownicy`
 --
 ALTER TABLE `uzytkownicy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -275,8 +312,14 @@ ALTER TABLE `uzytkownicy`
 --
 ALTER TABLE `rezerwacje`
   ADD CONSTRAINT `rezerwacje_ibfk_1` FOREIGN KEY (`uzytkownik_id`) REFERENCES `uzytkownicy` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rezerwacje_ibfk_2` FOREIGN KEY (`spektakl_id`) REFERENCES `spektakle` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `rezerwacje_ibfk_2` FOREIGN KEY (`termin_id`) REFERENCES `terminy` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `rezerwacje_ibfk_3` FOREIGN KEY (`miejsce_id`) REFERENCES `miejsca` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `terminy`
+--
+ALTER TABLE `terminy`
+  ADD CONSTRAINT `terminy_ibfk_1` FOREIGN KEY (`spektakl_id`) REFERENCES `spektakle` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
