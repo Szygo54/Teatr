@@ -49,11 +49,32 @@ if (isset($_GET['usun_bilet'])) {
     }
 }
 
-// Pobieranie spektakli do tabeli
+// --- POBIERANIE DANYCH DO STATYSTYK (DASHBOARD) ---
+// 1. Łączny przychód i liczba biletów
+$sqlStatystyki = "SELECT COUNT(r.id) as liczba_biletow, SUM(s.cena) as laczny_przychod 
+                  FROM Rezerwacje r 
+                  JOIN Spektakle s ON r.spektakl_id = s.id";
+$stmtStat = $pdo->query($sqlStatystyki);
+$statOgokolne = $stmtStat->fetch(PDO::FETCH_ASSOC);
+
+$liczba_biletow = $statOgokolne['liczba_biletow'] ?? 0;
+$laczny_przychod = $statOgokolne['laczny_przychod'] ?? 0;
+
+// 2. Najpopularniejszy spektakl
+$sqlTop = "SELECT s.tytul, COUNT(r.id) as sprzedane 
+           FROM Spektakle s 
+           LEFT JOIN Rezerwacje r ON s.id = r.spektakl_id 
+           GROUP BY s.id, s.tytul 
+           ORDER BY sprzedane DESC 
+           LIMIT 1";
+$stmtTop = $pdo->query($sqlTop);
+$topSpektakl = $stmtTop->fetch(PDO::FETCH_ASSOC);
+
+
+// --- POBIERANIE LIST DO TABEL ---
 $stmtSpektakle = $pdo->query("SELECT * FROM Spektakle ORDER BY data_wystawienia ASC");
 $spektakle = $stmtSpektakle->fetchAll(PDO::FETCH_ASSOC);
 
-// Pobieranie wszystkich rezerwacji z bazy (łączenie 4 tabel!)
 $sqlRezerwacje = "SELECT r.id as rezerwacja_id, u.imie, u.email, s.tytul, m.rzad, m.numer, r.data_zakupu 
                   FROM Rezerwacje r
                   JOIN Uzytkownicy u ON r.uzytkownik_id = u.id
@@ -167,6 +188,45 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
             margin-bottom: 25px;
         }
 
+        /* --- STYL DASHBOARDU (STATYSTYK) --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .stat-karta {
+            background-color: #333;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            border-bottom: 4px solid #829356;
+            transition: transform 0.2s;
+        }
+        
+        .stat-karta:hover { transform: translateY(-5px); }
+
+        .stat-tytul {
+            color: #aaaaaa;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-wartosc {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .stat-wartosc span {
+            color: #829356;
+            font-size: 18px;
+        }
+
         /* Formularz dodawania */
         .form-grid {
             display: grid;
@@ -265,7 +325,6 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-    <!-- Górny pasek nawigacji -->
     <div class="top-bar">
         <div class="zalogowany-jako">
             Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
@@ -276,7 +335,6 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <!-- Nagłówek -->
     <div class="header-sekcja">
         <h1>Teatr Jura</h1>
         <div class="podtytul">Panel Zarządzania</div>
@@ -284,7 +342,6 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container">
         
-        <!-- Komunikaty systemowe -->
         <?php if ($komunikat): ?>
             <?php $czy_blad = strpos(strtolower($komunikat), 'błąd') !== false; ?>
             <div class="komunikat <?= $czy_blad ? 'komunikat-blad' : 'komunikat-sukces' ?>">
@@ -292,7 +349,33 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
             </div>
         <?php endif; ?>
 
-        <!-- PANEL 1: Dodawanie spektaklu -->
+        <div class="panel">
+            <h3>Podsumowanie Sprzedaży</h3>
+            <div class="dashboard-grid">
+                <div class="stat-karta">
+                    <div class="stat-tytul">Sprzedane bilety</div>
+                    <div class="stat-wartosc"><?= $liczba_biletow ?> <span>szt.</span></div>
+                </div>
+                
+                <div class="stat-karta">
+                    <div class="stat-tytul">Całkowity przychód</div>
+                    <div class="stat-wartosc"><?= number_format($laczny_przychod, 2, ',', ' ') ?> <span>PLN</span></div>
+                </div>
+                
+                <div class="stat-karta">
+                    <div class="stat-tytul">Hit repertuaru</div>
+                    <div class="stat-wartosc" style="font-size: 20px; line-height: 1.6;">
+                        <?php if ($topSpektakl && $topSpektakl['sprzedane'] > 0): ?>
+                            <?= htmlspecialchars($topSpektakl['tytul']) ?><br>
+                            <span style="color: #aaaaaa; font-size: 14px;">(<?= $topSpektakl['sprzedane'] ?> rezerwacji)</span>
+                        <?php else: ?>
+                            <span style="color: #aaaaaa; font-size: 16px;">Brak danych</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="panel">
             <h3>Dodaj nowy spektakl</h3>
             <form method="POST" action="">
@@ -318,7 +401,6 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
             </form>
         </div>
 
-        <!-- PANEL 2: Rezerwacje -->
         <div class="panel">
             <h3>Baza Rezerwacji (Bilety)</h3>
             <?php if (empty($rezerwacje)): ?>
@@ -353,7 +435,6 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
 
-        <!-- PANEL 3: Repertuar -->
         <div class="panel">
             <h3>Aktualny Repertuar</h3>
             <?php if (empty($spektakle)): ?>
