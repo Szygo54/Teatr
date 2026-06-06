@@ -60,8 +60,18 @@ try {
         .lista-miejsc { list-style: none; padding: 0; text-align: left; background-color: #1a1a1a; border-radius: 5px; padding: 15px; border: 1px solid #333; }
         .lista-miejsc li { padding: 8px 0; border-bottom: 1px dashed #444; display: flex; justify-content: space-between; }
         .kwota-akcent { color: #829356; font-size: 24px; margin: 25px 0; font-weight: bold; }
-        .metody-platnosci { text-align: left; margin: 30px 0; }
-        .przycisk-zaplac { background-color: #829356; color: #ffffff; padding: 16px 30px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
+        .przycisk-zaplac { background-color: #829356; color: #ffffff; padding: 16px 30px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
+        .przycisk-zaplac:hover { background-color: #6a7944; }
+
+        /* --- NOWE STYLE DLA WYBORU PŁATNOŚCI --- */
+        .sekcja-platnosci { margin: 30px 0; text-align: center; }
+        .tytul-platnosci { font-size: 14px; font-weight: bold; color: #aaaaaa; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        .metody-kontener { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .metoda-radio { cursor: pointer; display: inline-block; }
+        .metoda-radio input[type="radio"] { display: none; }
+        .metoda-radio .znacznik { display: block; background-color: #333333; color: #cccccc; padding: 12px 20px; border: 2px solid #444444; border-radius: 5px; font-size: 15px; font-weight: bold; transition: all 0.3s ease; }
+        .metoda-radio:hover .znacznik { border-color: #829356; }
+        .metoda-radio input[type="radio"]:checked + .znacznik { background-color: #829356; border-color: #829356; color: #ffffff; box-shadow: 0 4px 10px rgba(130, 147, 86, 0.4); }
     </style>
 </head>
 <body>
@@ -87,11 +97,24 @@ try {
                 <input type="hidden" name="miejsca_do_zapisu[]" value="<?= htmlspecialchars($m_id) ?>">
             <?php endforeach; ?>
             
-            <div class="metody-platnosci">
-                <strong>Wybierz metodę płatności:</strong>
-                <label><input type="radio" name="metoda" value="blik" required> BLIK</label><br>
-                <label><input type="radio" name="metoda" value="karta"> Karta Płatnicza</label><br>
-                <label><input type="radio" name="metoda" value="przelew"> Szybki przelew</label>
+            <div class="sekcja-platnosci">
+                <p class="tytul-platnosci">Wybierz metodę płatności:</p>
+                <div class="metody-kontener">
+                    <label class="metoda-radio">
+                        <input type="radio" name="metoda" value="blik" required checked>
+                        <span class="znacznik">BLIK</span>
+                    </label>
+                    
+                    <label class="metoda-radio">
+                        <input type="radio" name="metoda" value="karta">
+                        <span class="znacznik">Karta Płatnicza</span>
+                    </label>
+                    
+                    <label class="metoda-radio">
+                        <input type="radio" name="metoda" value="przelew">
+                        <span class="znacznik">Szybki przelew</span>
+                    </label>
+                </div>
             </div>
             
             <button type="submit" name="inicjuj_platnosc" class="przycisk-zaplac">Przejdź do płatności</button>

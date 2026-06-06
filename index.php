@@ -17,8 +17,8 @@ try {
                                      ORDER BY t.data_wystawienia ASC LIMIT 4");
     $harmonogram = $stmtHarmonogram->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Spis sztuk (teraz pobieramy bezpośrednio z tabeli Spektakle)
-    $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle");
+    // 3. Spis sztuk do kafelków z plakatami (ograniczone do pierwszych 4)
+    $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
     $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (\PDOException $e) {
@@ -29,9 +29,6 @@ function polskiMiesiac($numerMiesiaca) {
     $miesiace = ['', 'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
     return $miesiace[(int)$numerMiesiaca];
 }
-// 3. Spis sztuk do kafelków z plakatami (ograniczone do pierwszych 4)
-    $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
-    $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -103,9 +100,13 @@ function polskiMiesiac($numerMiesiaca) {
             <a href="kalendarium.php">Kalendarium</a>
             <a href="spektakle.php">Wszystkie Sztuki</a>
             <?php if (isset($_SESSION['user_id'])): ?>
+                                <a href="moje_bilety.php" style="color: #829356;">Moje bilety</a> 
+                
                 <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php">Panel Admina</a><?php endif; ?>
                 <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?><a href="logowanie.php">Zaloguj</a><?php endif; ?>
+            <?php else: ?>
+                <a href="logowanie.php">Zaloguj</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -153,7 +154,6 @@ function polskiMiesiac($numerMiesiaca) {
         </div>
     </div>
 
-    </body>
     <div class="kontener-sekcji">
         <h2 class="naglowek-sekcji"><a href="aktorzy.php">Poznaj Nasz Zespół</a></h2>
         
@@ -188,4 +188,6 @@ function polskiMiesiac($numerMiesiaca) {
             </div>
         </div>
     </div>
+
+</body>
 </html>

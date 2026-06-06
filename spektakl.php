@@ -48,9 +48,10 @@ try {
         .kolumna-lewa { flex: 0.8; } 
         .kolumna-prawa { flex: 1.2; display: flex; flex-direction: column; }
         
-        /* Zmniejszamy wysokość plakatu */
-        .plakat-duzy { width: 100%; height: 500px; background: #262626; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 5px; }
-        .plakat-duzy img { width: 100%; height: 100%; object-fit: contain; }
+        /* Zmniejszamy wysokość plakatu i zaokrąglamy rogi */
+        .plakat-duzy { width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; }
+        .plakat-duzy img { max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        
         .tytul-spektaklu { font-size: 42px; color: #fff; margin: 0 0 20px 0; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; }
         .opis-spektaklu { font-size: 16px; line-height: 1.8; color: #bbb; margin-bottom: 40px; flex-grow: 1; }
         
