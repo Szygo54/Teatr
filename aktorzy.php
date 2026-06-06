@@ -136,7 +136,7 @@ $aktorzy = [
 
     <div class="kontener-sekcji">
         <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Poznaj naszych aktorów</h2>
+        <h2 class="naglowek-sekcji">Aktorzy</h2>
         
         <div class="siatka-aktorow">
             <?php foreach ($aktorzy as $aktor): ?>

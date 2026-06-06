@@ -31,7 +31,7 @@ function polskiMiesiacPelny($numerMiesiaca) {
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Pełne Kalendarium - Teatr Jura</title>
+    <title>Kalendarium - Teatr Jura</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
@@ -71,13 +71,9 @@ function polskiMiesiacPelny($numerMiesiaca) {
         </div>
     </div>
 
-    <div class="header-sekcja">
-        <h1 style="color: white; font-size: 40px; margin: 0; text-transform: uppercase; letter-spacing: 3px;">Repertuar</h1>
-    </div>
-
     <div class="kontener-sekcji">
         <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Pełne Kalendarium</h2>
+        <h2 class="naglowek-sekcji">Kalendarium</h2>
         
         <div class="lista-spektakli">
             <?php if (empty($harmonogram)): ?>

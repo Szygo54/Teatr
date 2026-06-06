@@ -50,7 +50,7 @@ try {
 
     <div class="kontener-sekcji">
         <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Wszystkie Spektakle</h2>
+        <h2 class="naglowek-sekcji">Spektakle</h2>
         
         <div class="siatka-plakatow">
             <?php foreach ($sztuki as $sztuka): ?>
