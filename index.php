@@ -21,6 +21,10 @@ try {
     $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
     $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 
+    // 4. NOWE: Pobieranie 4 losowych aktorów z bazy danych
+    $stmtAktorzy = $pdo->query("SELECT imie_nazwisko, zdjecie, specjalizacja FROM Aktorzy ORDER BY RAND() LIMIT 4");
+    $aktorzy = $stmtAktorzy->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (\PDOException $e) {
     die("Błąd bazy danych: " . $e->getMessage());
 }
@@ -86,6 +90,10 @@ function polskiMiesiac($numerMiesiaca) {
         .siatka-aktorow-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
         .karta-aktora-index { background: #262626; border-radius: 8px; overflow: hidden; text-align: center; }
         .zdjecie-aktora-index { height: 300px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; border-bottom: 3px solid #829356; }
+        
+        /* NOWE: Style dla obrazków w kafelkach aktorów */
+        .zdjecie-aktora-index img { width: 100%; height: 100%; object-fit: cover; }
+
         .dane-aktora-index { padding: 15px; }
         .imie-aktora-index { color: #fff; font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; }
         .rola-aktora-index { color: #829356; font-size: 13px; margin: 0; }
@@ -100,7 +108,7 @@ function polskiMiesiac($numerMiesiaca) {
             <a href="kalendarium.php">Kalendarium</a>
             <a href="spektakle.php">Wszystkie Sztuki</a>
             <?php if (isset($_SESSION['user_id'])): ?>
-                                <a href="moje_bilety.php" style="color: #829356;">Moje bilety</a> 
+                <a href="moje_bilety.php" style="color: #829356;">Moje bilety</a> 
                 
                 <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php">Panel Admina</a><?php endif; ?>
                 <a href="wyloguj.php">Wyloguj</a>
@@ -158,34 +166,17 @@ function polskiMiesiac($numerMiesiaca) {
         <h2 class="naglowek-sekcji"><a href="aktorzy.php">Poznaj Nasz Zespół</a></h2>
         
         <div class="siatka-aktorow-index">
-            <div class="karta-aktora-index">
-                <div class="zdjecie-aktora-index">ZDJĘCIE</div>
-                <div class="dane-aktora-index">
-                    <h3 class="imie-aktora-index">Jan Kowalski</h3>
-                    <p class="rola-aktora-index">Aktor dramatyczny</p>
+            <?php foreach ($aktorzy as $aktor): ?>
+                <div class="karta-aktora-index">
+                    <div class="zdjecie-aktora-index">
+                        <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>">
+                    </div>
+                    <div class="dane-aktora-index">
+                        <h3 class="imie-aktora-index"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
+                        <p class="rola-aktora-index"><?= htmlspecialchars($aktor['specjalizacja']) ?></p>
+                    </div>
                 </div>
-            </div>
-            <div class="karta-aktora-index">
-                <div class="zdjecie-aktora-index">ZDJĘCIE</div>
-                <div class="dane-aktora-index">
-                    <h3 class="imie-aktora-index">Anna Nowak</h3>
-                    <p class="rola-aktora-index">Aktorka charakterystyczna</p>
-                </div>
-            </div>
-            <div class="karta-aktora-index">
-                <div class="zdjecie-aktora-index">ZDJĘCIE</div>
-                <div class="dane-aktora-index">
-                    <h3 class="imie-aktora-index">Piotr Zieliński</h3>
-                    <p class="rola-aktora-index">Aktor</p>
-                </div>
-            </div>
-            <div class="karta-aktora-index">
-                <div class="zdjecie-aktora-index">ZDJĘCIE</div>
-                <div class="dane-aktora-index">
-                    <h3 class="imie-aktora-index">Katarzyna Wiśniewska</h3>
-                    <p class="rola-aktora-index">Aktorka gościnna</p>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
