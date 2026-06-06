@@ -70,88 +70,320 @@ $rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Panel Admina - Teatr Jura</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;}
-        .panel { background: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left;}
-        th { background-color: #333; color: white;}
-        .btn-usun { color: white; background: red; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;}
-        .btn-usun:hover { background: darkred; }
-        h3 { border-bottom: 2px solid #800020; padding-bottom: 5px; color: #800020; }
+        /* Główne tło i czcionka */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        /* Górny pasek nawigacji */
+        .top-bar {
+            background-color: #262626;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-size: 14px;
+        }
+
+        .top-bar .zalogowany-jako { color: #aaaaaa; }
+        .top-bar .zalogowany-jako strong { color: #829356; }
+
+        .top-bar a {
+            color: #aaaaaa;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .top-bar a:hover { color: #829356; }
+
+        /* Nagłówek */
+        .header-sekcja {
+            text-align: center;
+            margin: 40px 20px;
+        }
+
+        h1 { 
+            font-weight: 300; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            margin-bottom: 5px; 
+            color: #ffffff;
+        }
+
+        .podtytul {
+            color: #9e4747; /* Ceglasty akcent dla admina */
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Kontener główny */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Style komunikatów */
+        .komunikat {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .komunikat-sukces { background-color: #829356; color: #fff; }
+        .komunikat-blad { background-color: #9e4747; color: #fff; }
+
+        /* Pojedynczy panel z zawartością */
+        .panel { 
+            background: #262626; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin-bottom: 40px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+        }
+
+        h3 { 
+            border-bottom: 1px dashed #444; 
+            padding-bottom: 15px; 
+            color: #829356; 
+            font-weight: 400; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* Formularz dodawania */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-full { grid-column: 1 / -1; }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #829356;
+        }
+
+        .btn-dodaj { 
+            background-color: #829356; 
+            color: white; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: background-color 0.3s; 
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-dodaj:hover { background-color: #6a7944; }
+
+        /* Nowoczesne tabele dla trybu ciemnego */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 14px; 
+            text-align: left; 
+        }
+        
+        th, td { 
+            padding: 15px; 
+            border-bottom: 1px solid #444; 
+        }
+        
+        th { 
+            background-color: #1a1a1a; 
+            color: #aaaaaa; 
+            text-transform: uppercase; 
+            font-size: 12px; 
+            letter-spacing: 1px; 
+            font-weight: bold; 
+        }
+        
+        tr:hover { background-color: #333; }
+        
+        td strong { color: #ffffff; }
+
+        /* Przyciski akcji (Usuwanie) */
+        .btn-usun { 
+            display: inline-block; 
+            background-color: #9e4747; 
+            color: #ffffff; 
+            padding: 8px 15px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            transition: background-color 0.3s; 
+        }
+        
+        .btn-usun:hover { background-color: #7a3636; }
+
+        .brak-danych { color: #aaaaaa; font-style: italic; }
+
     </style>
 </head>
 <body>
 
-    <h1>Panel Zarządzania - Teatr Jura</h1>
-    <p><a href="index.php">Wróć na stronę główną</a> | <a href="wyloguj.php">Wyloguj</a></p>
-
-    <?php if ($komunikat) echo "<p style='color:green; font-weight:bold; padding: 10px; background: #e8f5e9; border: 1px solid #c8e6c9;'>$komunikat</p>"; ?>
-
-    <div class="panel">
-        <h3>1. Dodaj nowy spektakl</h3>
-        <form method="POST" action="">
-            <input type="text" name="tytul" placeholder="Tytuł sztuki" required style="width: 300px; padding: 5px;"><br><br>
-            <input type="datetime-local" name="data_wystawienia" required style="padding: 5px;"><br><br>
-            <input type="number" step="0.01" name="cena" placeholder="Cena (PLN)" required style="padding: 5px;"><br><br>
-            <textarea name="opis" placeholder="Opis..." rows="3" style="width: 300px; padding: 5px;"></textarea><br><br>
-            <button type="submit" name="dodaj_spektakl" style="padding: 8px 15px; background: #2e7d32; color: white; border: none; cursor:pointer;">Dodaj</button>
-        </form>
+    <!-- Górny pasek nawigacji -->
+    <div class="top-bar">
+        <div class="zalogowany-jako">
+            Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+        </div>
+        <div>
+            <a href="index.php">Wróć na stronę główną</a>
+            <a href="wyloguj.php">Wyloguj</a>
+        </div>
     </div>
 
-    <div class="panel">
-        <h3>2. Baza Rezerwacji (Zarządzanie biletami)</h3>
-        <?php if (empty($rezerwacje)): ?>
-            <p>Brak sprzedanych biletów.</p>
-        <?php else: ?>
-            <table>
-                <tr>
-                    <th>ID Ref.</th>
-                    <th>Klient</th>
-                    <th>E-mail</th>
-                    <th>Spektakl</th>
-                    <th>Miejsce (Rząd/Numer)</th>
-                    <th>Data zakupu</th>
-                    <th>Akcja</th>
-                </tr>
-                <?php foreach ($rezerwacje as $r): ?>
-                    <tr>
-                        <td>#<?= $r['rezerwacja_id'] ?></td>
-                        <td><strong><?= htmlspecialchars($r['imie']) ?></strong></td>
-                        <td><?= htmlspecialchars($r['email']) ?></td>
-                        <td><?= htmlspecialchars($r['tytul']) ?></td>
-                        <td>Rząd <?= $r['rzad'] ?>, Miejsce <?= $r['numer'] ?></td>
-                        <td><?= date('d.m.Y H:i', strtotime($r['data_zakupu'])) ?></td>
-                        <td>
-                            <a href="admin.php?usun_bilet=<?= $r['rezerwacja_id'] ?>" class="btn-usun" onclick="return confirm('Anulować ten bilet? Miejsce wróci do puli wolnych.');">Anuluj bilet</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
+    <!-- Nagłówek -->
+    <div class="header-sekcja">
+        <h1>Teatr Jura</h1>
+        <div class="podtytul">Panel Zarządzania</div>
+    </div>
+
+    <div class="container">
+        
+        <!-- Komunikaty systemowe -->
+        <?php if ($komunikat): ?>
+            <?php $czy_blad = strpos(strtolower($komunikat), 'błąd') !== false; ?>
+            <div class="komunikat <?= $czy_blad ? 'komunikat-blad' : 'komunikat-sukces' ?>">
+                <?= htmlspecialchars($komunikat) ?>
+            </div>
         <?php endif; ?>
-    </div>
 
-    <div class="panel">
-        <h3>3. Aktualny Repertuar</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Tytuł</th>
-                <th>Data</th>
-                <th>Cena</th>
-                <th>Akcja</th>
-            </tr>
-            <?php foreach ($spektakle as $s): ?>
-                <tr>
-                    <td><?= $s['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($s['tytul']) ?></strong></td>
-                    <td><?= $s['data_wystawienia'] ?></td>
-                    <td><?= $s['cena'] ?> PLN</td>
-                    <td>
-                        <a href="admin.php?usun_spektakl=<?= $s['id'] ?>" class="btn-usun" onclick="return confirm('Usunąć sztukę? Wszystkie kupione na nią bilety również znikną z bazy!');">Usuń sztukę</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+        <!-- PANEL 1: Dodawanie spektaklu -->
+        <div class="panel">
+            <h3>Dodaj nowy spektakl</h3>
+            <form method="POST" action="">
+                <div class="form-grid">
+                    <div>
+                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Tytuł sztuki</label>
+                        <input type="text" name="tytul" placeholder="Wpisz tytuł..." required>
+                    </div>
+                    <div>
+                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Data i godzina</label>
+                        <input type="datetime-local" name="data_wystawienia" required>
+                    </div>
+                    <div class="form-full">
+                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Cena biletu (PLN)</label>
+                        <input type="number" step="0.01" name="cena" placeholder="np. 80.00" required>
+                    </div>
+                    <div class="form-full">
+                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Opis spektaklu</label>
+                        <textarea name="opis" placeholder="Krótki opis sztuki..." rows="4" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" name="dodaj_spektakl" class="btn-dodaj">Zapisz do repertuaru</button>
+            </form>
+        </div>
+
+        <!-- PANEL 2: Rezerwacje -->
+        <div class="panel">
+            <h3>Baza Rezerwacji (Bilety)</h3>
+            <?php if (empty($rezerwacje)): ?>
+                <p class="brak-danych">Aktualnie nie ma żadnych sprzedanych biletów.</p>
+            <?php else: ?>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <tr>
+                            <th>ID Ref.</th>
+                            <th>Klient</th>
+                            <th>E-mail</th>
+                            <th>Spektakl</th>
+                            <th>Miejsce (Rząd / Nr)</th>
+                            <th>Data zakupu</th>
+                            <th>Akcja</th>
+                        </tr>
+                        <?php foreach ($rezerwacje as $r): ?>
+                            <tr>
+                                <td>#<?= $r['rezerwacja_id'] ?></td>
+                                <td><strong><?= htmlspecialchars($r['imie']) ?></strong></td>
+                                <td><?= htmlspecialchars($r['email']) ?></td>
+                                <td><?= htmlspecialchars($r['tytul']) ?></td>
+                                <td>Rząd <?= $r['rzad'] ?>, Miejsce <?= $r['numer'] ?></td>
+                                <td><?= date('d.m.Y H:i', strtotime($r['data_zakupu'])) ?></td>
+                                <td>
+                                    <a href="admin.php?usun_bilet=<?= $r['rezerwacja_id'] ?>" class="btn-usun" onclick="return confirm('Czy na pewno chcesz anulować ten bilet? Miejsce automatycznie wróci do puli wolnych na widowni.');">Anuluj bilet</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- PANEL 3: Repertuar -->
+        <div class="panel">
+            <h3>Aktualny Repertuar</h3>
+            <?php if (empty($spektakle)): ?>
+                <p class="brak-danych">Baza spektakli jest pusta.</p>
+            <?php else: ?>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tytuł</th>
+                            <th>Data wystawienia</th>
+                            <th>Cena</th>
+                            <th>Akcja</th>
+                        </tr>
+                        <?php foreach ($spektakle as $s): ?>
+                            <tr>
+                                <td><?= $s['id'] ?></td>
+                                <td><strong><?= htmlspecialchars($s['tytul']) ?></strong></td>
+                                <td><?= date('d.m.Y H:i', strtotime($s['data_wystawienia'])) ?></td>
+                                <td style="color: #829356; font-weight: bold;"><?= $s['cena'] ?> PLN</td>
+                                <td>
+                                    <a href="admin.php?usun_spektakl=<?= $s['id'] ?>" class="btn-usun" onclick="return confirm('UWAGA: Usunięcie sztuki sprawi, że zniknie ona ze strony, a wszystkie kupione na nią bilety zostaną bezpowrotnie usunięte z bazy! Kontynuować?');">Usuń sztukę</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+
     </div>
 
 </body>

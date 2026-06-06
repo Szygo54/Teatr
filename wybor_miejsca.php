@@ -59,7 +59,7 @@ try {
 
         .logo-img { 
             width: 100%;
-            max-width: 320px; 
+            max-width: 200px; 
             height: auto;
             margin-bottom: 20px; 
             display: block;
