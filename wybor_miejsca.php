@@ -43,47 +43,128 @@ try {
     <meta charset="UTF-8">
     <title>Wybierz miejsca - Teatr Jura</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
-        .scena { background: #333; color: white; padding: 10px; margin: 20px auto; width: 80%; border-radius: 5px; font-weight: bold; letter-spacing: 5px;}
+        /* Główne tło i czcionka - zostaje czerń i szarość */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px 20px;
+        }
         
-        /* Magia CSS Grid do ułożenia 12 miejsc w 8 rzędach */
+        /* Eleganckie nagłówki */
+        h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
+        .spektakl-info { color: #aaaaaa; margin-bottom: 40px; font-size: 15px; }
+        .cena-akcent { color: #829356; font-weight: bold; } /* Ziemista oliwka */
+
+        /* Logo wczytywane z pliku */
+        .logo-img { 
+            width: 100%;
+            max-width: 220px; 
+            height: auto;
+            margin-bottom: 20px; 
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Projekt sceny - zostaje ciemnoszary */
+        .scena { 
+            background-color: #333; 
+            height: 45px;
+            width: 100%;
+            max-width: 850px; 
+            margin: 0 auto 40px auto; 
+            border-radius: 5px 5px 20px 20px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #888; 
+            font-weight: bold; 
+            font-size: 18px;
+            letter-spacing: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        
+        /* Siatka miejsc */
         .sala { 
             display: grid; 
             grid-template-columns: repeat(12, 1fr); 
-            gap: 10px; 
-            max-width: 800px; 
+            gap: 12px; 
+            max-width: 850px; 
             margin: 0 auto; 
         }
         
-        /* Stylowanie checkboxów udających fotele */
+        /* Wygląd pojedynczego fotela - Zgaszony, wapienny beż/szary */
         .fotel-label {
-            display: block;
-            padding: 15px 5px;
-            background-color: #4CAF50; /* Zielony - wolne */
-            color: white;
-            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px; 
+            background-color:rgb(232, 229, 220); 
+            color: #1a1a1a;
+            border-radius: 8px 8px 4px 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 12px; 
+            font-weight: bold;
             user-select: none;
+            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
         }
-        .fotel-label:hover { background-color: #45a049; }
         
-        /* Ukrywamy domyślne pole checkboxa */
+        .fotel-label:hover { 
+            transform: scale(1.1); 
+            background-color: #d1ccbc;
+        }
+        
         .fotel-checkbox { display: none; }
         
-        /* Zmiana koloru, gdy użytkownik zaznaczy wolne miejsce */
-        .fotel-checkbox:checked + .fotel-label { background-color: #2196F3; } /* Niebieski - wybrane */
+        /* Miejsca WYBRANE - Ziemisty oliwkowy zielony */
+        .fotel-checkbox:checked + .fotel-label { 
+            background-color: #829356; 
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(130, 147, 86, 0.4);
+            transform: scale(1.1);
+        }
         
-        /* Styl dla miejsc zajętych przez innych */
-        .fotel-zajety { background-color: #f44336; color: white; cursor: not-allowed; opacity: 0.7; }
+        /* Miejsca ZAJĘTE - Ceglasty czerwony */
+        .fotel-zajety { 
+            background-color: #9e4747; 
+            color: #e0e0e0; 
+            cursor: not-allowed; 
+            opacity: 0.8; 
+            box-shadow: none;
+        }
+        .fotel-zajety:hover { transform: none; background-color: #9e4747; } 
         
-        .przycisk-koszyk { margin-top: 30px; padding: 15px 30px; background-color: #800020; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; }
+        /* Przycisk przejścia do koszyka */
+        .przycisk-koszyk { 
+            margin-top: 50px; 
+            padding: 16px 45px; 
+            background-color: #829356; /* Ziemista oliwka */
+            color: #ffffff; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .przycisk-koszyk:hover { background-color: #6a7944; }
+        
     </style>
 </head>
 <body>
 
-    <h2>Spektakl: <?= htmlspecialchars($spektakl['tytul']) ?></h2>
-    <p>Data: <?= $spektakl['data_wystawienia'] ?> | Cena za bilet: <?= $spektakl['cena'] ?> PLN</p>
+    <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
+
+    <h2><?= htmlspecialchars($spektakl['tytul']) ?></h2>
+    <p class="spektakl-info">
+        Data: <?= htmlspecialchars($spektakl['data_wystawienia']) ?> | 
+        Bilet: <span class="cena-akcent"><?= htmlspecialchars($spektakl['cena']) ?> PLN</span>
+    </p>
 
     <div class="scena">SCENA</div>
 
@@ -93,15 +174,14 @@ try {
         <div class="sala">
             <?php foreach ($wszystkie_miejsca as $m): ?>
                 <?php 
-                    // Sprawdzamy czy to konkretne ID znajduje się w tablicy zajętych
                     $czy_zajete = in_array($m['id'], $zajete_id); 
                 ?>
                 <div>
                     <?php if ($czy_zajete): ?>
-                        <div class="fotel-label fotel-zajety">R<?= $m['rzad'] ?> M<?= $m['numer'] ?></div>
+                        <div class="fotel-label fotel-zajety">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></div>
                     <?php else: ?>
                         <input type="checkbox" name="wybrane_miejsca[]" value="<?= $m['id'] ?>" id="miejsce_<?= $m['id'] ?>" class="fotel-checkbox">
-                        <label for="miejsce_<?= $m['id'] ?>" class="fotel-label">R<?= $m['rzad'] ?> M<?= $m['numer'] ?></label>
+                        <label for="miejsce_<?= $m['id'] ?>" class="fotel-label">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></label>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
