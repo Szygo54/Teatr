@@ -11,12 +11,15 @@ $uzytkownik_id = $_SESSION['user_id'];
 $imie_uzytkownika = $_SESSION['user_imie'];
 
 try {
-    $sql = "SELECT r.id as rezerwacja_id, s.tytul, s.data_wystawienia, m.rzad, m.numer, r.data_zakupu 
+    // NAPRAWIONE ZAPYTANIE SQL:
+    // Łączymy Rezerwacje -> Terminy -> Spektakle
+    $sql = "SELECT r.id as rezerwacja_id, s.tytul, t.data_wystawienia, m.rzad, m.numer, r.data_zakupu 
             FROM Rezerwacje r
-            JOIN Spektakle s ON r.spektakl_id = s.id
+            JOIN Terminy t ON r.termin_id = t.id
+            JOIN Spektakle s ON t.spektakl_id = s.id
             JOIN Miejsca m ON r.miejsce_id = m.id
             WHERE r.uzytkownik_id = ?
-            ORDER BY s.data_wystawienia ASC";
+            ORDER BY t.data_wystawienia ASC";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$uzytkownik_id]);
@@ -46,7 +49,8 @@ try {
         .btn-pdf { background-color: #829356; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; font-weight: bold; }
         .btn-pdf:hover { background-color: #6a7944; }
         
-        .szablon-bilet { display: none; background-color: #1a1a1a; color: #e0e0e0; padding: 40px; border: 8px solid #829356; width: 600px; box-sizing: border-box; }
+        /* Ważne dla PDF: musi być widoczne w trakcie generowania */
+        .szablon-bilet { display: none; background-color: #ffffff; color: #333; padding: 40px; border: 8px solid #829356; width: 600px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -57,7 +61,7 @@ try {
     </div>
 
     <div class="header-sekcja">
-        <img src="zdjecia/logo.png?v=<?= time() ?>" alt="Logo" class="logo-img">
+        <img src="zdjecia/logo.png" alt="Logo" class="logo-img">
         <div style="color:#829356; font-weight:bold; letter-spacing: 2px;">TWOJE BILETY</div>
     </div>
 
@@ -71,27 +75,18 @@ try {
                     <tr>
                         <td><strong><?= htmlspecialchars($b['tytul']) ?></strong></td>
                         <td><?= date('d.m.Y H:i', strtotime($b['data_wystawienia'])) ?></td>
-                        <td>Rząd <?= $b['rzad'] ?> / Miejsce <?= $b['numer'] ?></td>
+                        <td>Rząd <?= htmlspecialchars($b['rzad']) ?> / Miejsce <?= htmlspecialchars($b['numer']) ?></td>
                         <td><button class="btn-pdf" onclick="generujBilet(<?= $b['rezerwacja_id'] ?>)">Pobierz PDF</button></td>
                     </tr>
 
-                    <!-- Ukryty szablon -->
                     <div id="szablon-<?= $b['rezerwacja_id'] ?>" class="szablon-bilet">
                         <img src="zdjecia/logo.png" style="width: 150px; display:block; margin: 0 auto 20px;">
-                        <h1 style="text-align:center; color:#fff;"><?= htmlspecialchars($b['tytul']) ?></h1>
-                        <p>Właściciel: <?= htmlspecialchars($imie_uzytkownika) ?></p>
-                        <p>Data: <?= date('d.m.Y H:i', strtotime($b['data_wystawienia'])) ?></p>
-                        <p>Rząd: <?= $b['rzad'] ?>, Miejsce: <?= $b['numer'] ?></p>
-                        
+                        <h1 style="text-align:center; color:#333;"><?= htmlspecialchars($b['tytul']) ?></h1>
+                        <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
+                        <p><strong>Data:</strong> <?= date('d.m.Y H:i', strtotime($b['data_wystawienia'])) ?></p>
+                        <p><strong>Miejsce:</strong> Rząd <?= htmlspecialchars($b['rzad']) ?>, Miejsce <?= htmlspecialchars($b['numer']) ?></p>
                         <div style="text-align:center; margin-top:30px;">
-                            <?php 
-                                $sciezka_qr = "zdjecia/qr.png";
-                                if (file_exists($sciezka_qr)) {
-                                    echo '<img src="' . $sciezka_qr . '" style="width:150px; height:150px; background:white; padding:5px;">';
-                                } else {
-                                    echo '<p style="color:#9e4747;">Brak pliku qr.png w folderze zdjecia/</p>';
-                                }
-                            ?>
+                            <img src="zdjecia/qr.png" style="width:150px; height:150px; background:white; border: 1px solid #ccc;">
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -102,9 +97,15 @@ try {
     <script>
         function generujBilet(id) {
             const el = document.getElementById('szablon-' + id);
-            el.style.display = 'block';
-            html2pdf().from(el).save('Bilet_Teatr_Jura_' + id + '.pdf');
-            setTimeout(() => { el.style.display = 'none'; }, 500);
+            // html2pdf potrzebuje elementu, który jest widoczny w DOM
+            el.style.display = 'block'; 
+            html2pdf().from(el).set({
+                margin: 10,
+                filename: 'Bilet_Teatr_Jura_' + id + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 }
+            }).save().then(() => {
+                el.style.display = 'none'; // Ukryj po wygenerowaniu
+            });
         }
     </script>
 </body>

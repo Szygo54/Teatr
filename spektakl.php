@@ -2,7 +2,6 @@
 session_start();
 require_once 'database.php';
 
-// Zabezpieczenie: jeśli ktoś wszedł na stronę bez podania ID, wyrzucamy go na główną
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: index.php");
     exit;
@@ -11,12 +10,17 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $id_spektaklu = (int)$_GET['id'];
 
 try {
-    // Pobieramy dane TYLKO dla wybranego ID
-    $stmt = $pdo->prepare("SELECT * FROM Spektakle WHERE id = ?");
+    // NAPRAWA: Łączymy Spektakl z jego najbliższym terminem
+    $sql = "SELECT s.*, MIN(t.data_wystawienia) as najblizszy_termin, t.id as termin_id
+            FROM Spektakle s
+            LEFT JOIN Terminy t ON s.id = t.spektakl_id
+            WHERE s.id = ?
+            GROUP BY s.id";
+            
+    $stmt = $pdo->prepare($sql);
     $stmt->execute([$id_spektaklu]);
     $spektakl = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Jeśli w URL wpisano ID, którego nie ma w bazie
     if (!$spektakl) {
         die("Błąd 404: Taki spektakl nie istnieje. <a href='index.php'>Wróć</a>");
     }
@@ -37,16 +41,16 @@ try {
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
         
-        /* POSZERZONY KONTENER DO 1250px */
         .kontener-sekcji { max-width: 1250px; margin: 40px auto; padding: 0 20px; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         
-        /* Layout strony spektaklu */
         .spektakl-layout { display: flex; gap: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .kolumna-lewa { flex: 1; }
         .kolumna-prawa { flex: 1; display: flex; flex-direction: column; }
         
-        .plakat-duzy { width: 100%; height: 600px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; font-size: 24px; font-weight: bold; border-radius: 5px; }
+        /* PLAKAT: Teraz zaciąga ścieżkę z bazy */
+        .plakat-duzy { width: 100%; height: 600px; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 5px; }
+        .plakat-duzy img { width: 100%; height: 100%; object-fit: cover; }
         
         .tytul-spektaklu { font-size: 42px; color: #fff; margin: 0 0 20px 0; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; }
         .opis-spektaklu { font-size: 16px; line-height: 1.8; color: #bbb; margin-bottom: 40px; flex-grow: 1; }
@@ -75,7 +79,7 @@ try {
         
         <div class="spektakl-layout">
             <div class="kolumna-lewa">
-                <div class="plakat-duzy">MIEJSCE NA PLAKAT</div>
+                <div class="plakat-duzy"><img src="<?= htmlspecialchars($spektakl['plakat']) ?>" alt="Plakat"></div>
             </div>
             
             <div class="kolumna-prawa">
@@ -86,12 +90,20 @@ try {
                 </div>
                 
                 <div class="detale">
-                    <p><strong>Najbliższe wystawienie:</strong><br> 
-                    <?= date('d.m.Y', strtotime($spektakl['data_wystawienia'])) ?> r. o godz. <?= date('H:i', strtotime($spektakl['data_wystawienia'])) ?></p>
-                    <p><strong>Cena biletu:</strong> <span class="cena-tag"><?= $spektakl['cena'] ?> PLN</span></p>
+                    <?php if ($spektakl['najblizszy_termin']): ?>
+                        <p><strong>Najbliższe wystawienie:</strong><br> 
+                        <?= date('d.m.Y', strtotime($spektakl['najblizszy_termin'])) ?> r. o godz. <?= date('H:i', strtotime($spektakl['najblizszy_termin'])) ?></p>
+                    <?php else: ?>
+                        <p><strong>Najbliższe wystawienie:</strong><br> Brak zaplanowanych terminów.</p>
+                    <?php endif; ?>
+                    <p><strong>Cena biletu:</strong> <span class="cena-tag"><?= number_format($spektakl['cena'], 2) ?> PLN</span></p>
                 </div>
                 
-                <a href="wybor_miejsca.php?spektakl_id=<?= $spektakl['id'] ?>" class="btn-wielki">Kup bilet na ten spektakl</a>
+                <?php if ($spektakl['termin_id']): ?>
+                    <a href="wybor_miejsca.php?termin_id=<?= $spektakl['termin_id'] ?>" class="btn-wielki">Kup bilet na ten spektakl</a>
+                <?php else: ?>
+                    <button class="btn-wielki" style="background:#555;" disabled>Brak biletów</button>
+                <?php endif; ?>
             </div>
         </div>
     </div>

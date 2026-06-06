@@ -17,10 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_spektakl'])) {
     $cena = $_POST['cena'];
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO Spektakle (tytul, opis, data_wystawienia, cena) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$tytul, $opis, $data_wystawienia, $cena]);
-        $komunikat = "Spektakl dodany pomyślnie.";
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("INSERT INTO Spektakle (tytul, opis, cena) VALUES (?, ?, ?)");
+        $stmt->execute([$tytul, $opis, $cena]);
+        $spektakl_id = $pdo->lastInsertId();
+        
+        $stmtT = $pdo->prepare("INSERT INTO Terminy (spektakl_id, data_wystawienia) VALUES (?, ?)");
+        $stmtT->execute([$spektakl_id, $data_wystawienia]);
+        $pdo->commit();
+        $komunikat = "Spektakl i termin dodany pomyślnie.";
     } catch (\PDOException $e) {
+        $pdo->rollBack();
         $komunikat = "Błąd: " . $e->getMessage();
     }
 }
@@ -28,61 +35,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_spektakl'])) {
 // --- OBSŁUGA USUWANIA SPEKTAKLU ---
 if (isset($_GET['usun_spektakl'])) {
     $id_do_usuniecia = (int)$_GET['usun_spektakl'];
-    try {
-        $stmt = $pdo->prepare("DELETE FROM Spektakle WHERE id = ?");
-        $stmt->execute([$id_do_usuniecia]);
-        $komunikat = "Spektakl usunięty.";
-    } catch (\PDOException $e) {
-        $komunikat = "Błąd: " . $e->getMessage();
-    }
+    $pdo->prepare("DELETE FROM Spektakle WHERE id = ?")->execute([$id_do_usuniecia]);
+    $komunikat = "Spektakl usunięty.";
 }
 
 // --- OBSŁUGA ANULOWANIA REZERWACJI ---
 if (isset($_GET['usun_bilet'])) {
     $bilet_id = (int)$_GET['usun_bilet'];
-    try {
-        $stmt = $pdo->prepare("DELETE FROM Rezerwacje WHERE id = ?");
-        $stmt->execute([$bilet_id]);
-        $komunikat = "Rezerwacja została anulowana (miejsce zwolnione).";
-    } catch (\PDOException $e) {
-        $komunikat = "Błąd: " . $e->getMessage();
-    }
+    $pdo->prepare("DELETE FROM Rezerwacje WHERE id = ?")->execute([$bilet_id]);
+    $komunikat = "Rezerwacja anulowana.";
 }
 
-// --- POBIERANIE DANYCH DO STATYSTYK (DASHBOARD) ---
-// 1. Łączny przychód i liczba biletów
+// --- STATYSTYKI ---
 $sqlStatystyki = "SELECT COUNT(r.id) as liczba_biletow, SUM(s.cena) as laczny_przychod 
                   FROM Rezerwacje r 
-                  JOIN Spektakle s ON r.spektakl_id = s.id";
-$stmtStat = $pdo->query($sqlStatystyki);
-$statOgokolne = $stmtStat->fetch(PDO::FETCH_ASSOC);
+                  JOIN Terminy t ON r.termin_id = t.id
+                  JOIN Spektakle s ON t.spektakl_id = s.id";
+$statOgokolne = $pdo->query($sqlStatystyki)->fetch(PDO::FETCH_ASSOC);
 
 $liczba_biletow = $statOgokolne['liczba_biletow'] ?? 0;
 $laczny_przychod = $statOgokolne['laczny_przychod'] ?? 0;
 
-// 2. Najpopularniejszy spektakl
+// --- POBIERANIE LIST ---
+$spektakle = $pdo->query("SELECT s.*, t.data_wystawienia FROM Spektakle s JOIN Terminy t ON s.id = t.spektakl_id ORDER BY t.data_wystawienia ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+$sqlRezerwacje = "SELECT r.id as rezerwacja_id, u.imie, u.email, s.tytul, t.data_wystawienia, m.rzad, m.numer, r.data_zakupu 
+                  FROM Rezerwacje r
+                  JOIN Uzytkownicy u ON r.uzytkownik_id = u.id
+                  JOIN Terminy t ON r.termin_id = t.id
+                  JOIN Spektakle s ON t.spektakl_id = s.id
+                  JOIN Miejsca m ON r.miejsce_id = m.id
+                  ORDER BY r.data_zakupu DESC";
+$rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
+// --- POBIERANIE HITU REPERTUARU ---
+// Teraz łączymy Rezerwacje -> Terminy -> Spektakle, żeby policzyć sprzedaż dla tytułu
 $sqlTop = "SELECT s.tytul, COUNT(r.id) as sprzedane 
            FROM Spektakle s 
-           LEFT JOIN Rezerwacje r ON s.id = r.spektakl_id 
+           LEFT JOIN Terminy t ON s.id = t.spektakl_id 
+           LEFT JOIN Rezerwacje r ON t.id = r.termin_id 
            GROUP BY s.id, s.tytul 
            ORDER BY sprzedane DESC 
            LIMIT 1";
+
 $stmtTop = $pdo->query($sqlTop);
 $topSpektakl = $stmtTop->fetch(PDO::FETCH_ASSOC);
-
-
-// --- POBIERANIE LIST DO TABEL ---
-$stmtSpektakle = $pdo->query("SELECT * FROM Spektakle ORDER BY data_wystawienia ASC");
-$spektakle = $stmtSpektakle->fetchAll(PDO::FETCH_ASSOC);
-
-$sqlRezerwacje = "SELECT r.id as rezerwacja_id, u.imie, u.email, s.tytul, m.rzad, m.numer, r.data_zakupu 
-                  FROM Rezerwacje r
-                  JOIN Uzytkownicy u ON r.uzytkownik_id = u.id
-                  JOIN Spektakle s ON r.spektakl_id = s.id
-                  JOIN Miejsca m ON r.miejsce_id = m.id
-                  ORDER BY r.data_zakupu DESC";
-$stmtRezerwacje = $pdo->query($sqlRezerwacje);
-$rezerwacje = $stmtRezerwacje->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

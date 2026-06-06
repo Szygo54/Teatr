@@ -7,7 +7,8 @@ if (!isset($_SESSION['user_id']) || !isset($_POST['inicjuj_platnosc'])) {
     exit;
 }
 
-$spektakl_id = (int)$_POST['spektakl_id'];
+// Odbieramy termin_id zamiast spektakl_id
+$termin_id = (int)$_POST['termin_id'];
 $miejsca_do_zapisu = $_POST['miejsca_do_zapisu']; 
 $metoda_platnosci = isset($_POST['metoda']) ? htmlspecialchars($_POST['metoda']) : '';
 $uzytkownik_id = $_SESSION['user_id'];
@@ -16,21 +17,25 @@ $imie_uzytkownika = $_SESSION['user_imie'];
 $sukces_db = true;
 $komunikat_bledu = "";
 
-// 1. Rezerwacja w bazie danych
+// 1. Rezerwacja w bazie danych (używamy termin_id)
 foreach ($miejsca_do_zapisu as $m_id) {
     try {
-        $stmt = $pdo->prepare("INSERT INTO Rezerwacje (uzytkownik_id, spektakl_id, miejsce_id) VALUES (?, ?, ?)");
-        $stmt->execute([$uzytkownik_id, $spektakl_id, (int)$m_id]);
+        // NAPRAWIONE ZAPYTANIE: Wstawiamy termin_id zamiast spektakl_id
+        $stmt = $pdo->prepare("INSERT INTO Rezerwacje (uzytkownik_id, termin_id, miejsce_id) VALUES (?, ?, ?)");
+        $stmt->execute([$uzytkownik_id, $termin_id, (int)$m_id]);
     } catch (\PDOException $e) {
         $sukces_db = false;
-        $komunikat_bledu = "Część miejsc została zarezerwowana przez kogoś innego w trakcie przetwarzania.";
+        $komunikat_bledu = "To miejsce jest już zajęte.";
     }
 }
 
-// 2. Jeśli sukces, pobieramy dane do wygenerowania biletu PDF
+// 2. Jeśli sukces, pobieramy dane do wygenerowania biletu PDF (JOIN przez terminy)
 if ($sukces_db) {
-    $stmtS = $pdo->prepare("SELECT tytul, data_wystawienia FROM Spektakle WHERE id = ?");
-    $stmtS->execute([$spektakl_id]);
+    $stmtS = $pdo->prepare("SELECT s.tytul, t.data_wystawienia 
+                            FROM Spektakle s 
+                            JOIN Terminy t ON s.id = t.spektakl_id 
+                            WHERE t.id = ?");
+    $stmtS->execute([$termin_id]);
     $info_spektakl = $stmtS->fetch(PDO::FETCH_ASSOC);
 
     $placeholdery = str_repeat('?,', count($miejsca_do_zapisu) - 1) . '?';
@@ -61,26 +66,20 @@ if ($sukces_db) {
 <body>
 
     <?php if ($sukces_db): ?>
-    <div id="szablon-bilet-pdf" style="background-color: #1a1a1a; color: #e0e0e0; padding: 50px; border: 10px solid #829356; box-sizing: border-box; width: 800px; display:none;">
+    <div id="szablon-bilet-pdf" style="background-color: #ffffff; color: #333; padding: 50px; border: 10px solid #829356; box-sizing: border-box; width: 800px; display:none;">
         <div style="text-align: center; margin-bottom: 40px;">
-            <img src="zdjecia/logo.png?v=<?= time() ?>" style="max-width: 200px; height: auto;">
+            <img src="zdjecia/logo.png" style="max-width: 200px;">
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; background-color: #262626; padding: 30px; border-radius: 10px;">
-            <div style="width: 60%;">
-                <h2 style="color: #ffffff; margin-top: 0;"><?= htmlspecialchars($info_spektakl['tytul']) ?></h2>
-                <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($info_spektakl['data_wystawienia'])) ?></p>
-                <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
-                <h3 style="color: #829356; border-bottom: 1px solid #444; padding-bottom: 10px;">Miejsca:</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <?php foreach($info_miejsca as $m): ?>
-                        <li>Rząd <strong><?= $m['rzad'] ?></strong> | Miejsce <strong><?= $m['numer'] ?></strong></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-            <div style="width: 35%; text-align: right;">
-                <img src="zdjecia/qr.png" alt="Kod QR" style="background: white; padding: 5px; border-radius: 5px; width: 150px; height: 150px;">
-                <p style="font-size: 12px; color: #aaaaaa; margin-top: 5px;">Zeskanuj przy wejściu</p>
-            </div>
+        <div style="background-color: #f4f4f4; padding: 30px; border-radius: 10px;">
+            <h2 style="margin-top: 0;"><?= htmlspecialchars($info_spektakl['tytul']) ?></h2>
+            <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($info_spektakl['data_wystawienia'])) ?></p>
+            <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
+            <h3 style="color: #829356;">Miejsca:</h3>
+            <ul>
+                <?php foreach($info_miejsca as $m): ?>
+                    <li>Rząd <strong><?= htmlspecialchars($m['rzad']) ?></strong> | Miejsce <strong><?= htmlspecialchars($m['numer']) ?></strong></li>
+                <?php endforeach; ?>
+            </ul>
         </div>
     </div>
     <?php endif; ?>
@@ -94,7 +93,7 @@ if ($sukces_db) {
         </div>
 
         <div id="ekran-ladowania">
-            <h2 id="status-tekst">Łączenie z operatorem...</h2>
+            <h2>Łączenie z operatorem...</h2>
             <div class="spinner"></div>
         </div>
 
@@ -102,8 +101,7 @@ if ($sukces_db) {
             <?php if ($sukces_db): ?>
                 <h1 style="color: #829356;">✓ Płatność zaakceptowana!</h1>
                 <button class="btn-pdf" onclick="pobierzPDF()">Pobierz bilet (PDF)</button>
-                <br>
-                <a href="moje_bilety.php" class="przycisk-powrot">Moje bilety</a>
+                <br><a href="moje_bilety.php" class="przycisk-powrot">Moje bilety</a>
             <?php else: ?>
                 <h1 style="color: #9e4747;">✕ Błąd transakcji</h1>
                 <p><?= $komunikat_bledu ?></p>
@@ -113,7 +111,6 @@ if ($sukces_db) {
     </div>
 
     <script>
-        const metoda = "<?= $metoda_platnosci ?>".toLowerCase();
         function uruchomPrzetwarzanie() {
             document.getElementById('ekran-blik').style.display = 'none';
             document.getElementById('ekran-ladowania').style.display = 'block';
@@ -123,6 +120,7 @@ if ($sukces_db) {
             }, 2500);
         }
         
+        const metoda = "<?= $metoda_platnosci ?>".toLowerCase();
         if (metoda === 'blik') {
             document.getElementById('ekran-blik').style.display = 'block';
             document.getElementById('btn-potwierdz-blik').onclick = () => {
