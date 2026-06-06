@@ -37,7 +37,8 @@ try {
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
         
-        .kontener-sekcji { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        /* POSZERZONY KONTENER DO 1250px */
+        .kontener-sekcji { max-width: 1250px; margin: 40px auto; padding: 0 20px; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         
         /* Layout strony spektaklu */
