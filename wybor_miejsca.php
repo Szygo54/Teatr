@@ -43,7 +43,7 @@ try {
     <meta charset="UTF-8">
     <title>Wybierz miejsca - Teatr Jura</title>
     <style>
-        /* Główne tło i czcionka - zostaje czerń i szarość */
+        /* Główne tło i czcionka */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             text-align: center; 
@@ -53,15 +53,13 @@ try {
             padding: 40px 20px;
         }
         
-        /* Eleganckie nagłówki */
         h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
         .spektakl-info { color: #aaaaaa; margin-bottom: 40px; font-size: 15px; }
-        .cena-akcent { color: #829356; font-weight: bold; } /* Ziemista oliwka */
+        .cena-akcent { color: #829356; font-weight: bold; }
 
-        /* Logo wczytywane z pliku */
         .logo-img { 
             width: 100%;
-            max-width: 220px; 
+            max-width: 320px; 
             height: auto;
             margin-bottom: 20px; 
             display: block;
@@ -69,7 +67,6 @@ try {
             margin-right: auto;
         }
 
-        /* Projekt sceny - zostaje ciemnoszary */
         .scena { 
             background-color: #333; 
             height: 45px;
@@ -87,7 +84,6 @@ try {
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         
-        /* Siatka miejsc */
         .sala { 
             display: grid; 
             grid-template-columns: repeat(12, 1fr); 
@@ -96,13 +92,12 @@ try {
             margin: 0 auto; 
         }
         
-        /* Wygląd pojedynczego fotela - Zgaszony, wapienny beż/szary */
         .fotel-label {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 50px; 
-            background-color:rgb(232, 229, 220); 
+            background-color:rgb(231, 229, 222); 
             color: #1a1a1a;
             border-radius: 8px 8px 4px 4px;
             cursor: pointer;
@@ -119,7 +114,6 @@ try {
         
         .fotel-checkbox { display: none; }
         
-        /* Miejsca WYBRANE - Ziemisty oliwkowy zielony */
         .fotel-checkbox:checked + .fotel-label { 
             background-color: #829356; 
             color: #ffffff;
@@ -127,7 +121,6 @@ try {
             transform: scale(1.1);
         }
         
-        /* Miejsca ZAJĘTE - Ceglasty czerwony */
         .fotel-zajety { 
             background-color: #9e4747; 
             color: #e0e0e0; 
@@ -137,11 +130,10 @@ try {
         }
         .fotel-zajety:hover { transform: none; background-color: #9e4747; } 
         
-        /* Przycisk przejścia do koszyka */
         .przycisk-koszyk { 
-            margin-top: 50px; 
+            margin-top: 30px; 
             padding: 16px 45px; 
-            background-color: #829356; /* Ziemista oliwka */
+            background-color: #829356; 
             color: #ffffff; 
             border: none; 
             border-radius: 5px; 
@@ -158,7 +150,7 @@ try {
 </head>
 <body>
 
-    <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
+    <img src="zdjecia/logo.png?v=<?= time() ?>" alt="Logo Teatr Jura" class="logo-img">
 
     <h2><?= htmlspecialchars($spektakl['tytul']) ?></h2>
     <p class="spektakl-info">
@@ -168,14 +160,12 @@ try {
 
     <div class="scena">SCENA</div>
 
-    <form action="koszyk.php" method="POST">
+    <form action="koszyk.php" method="POST" id="formularz-rezerwacji">
         <input type="hidden" name="spektakl_id" value="<?= $spektakl_id ?>">
         
         <div class="sala">
             <?php foreach ($wszystkie_miejsca as $m): ?>
-                <?php 
-                    $czy_zajete = in_array($m['id'], $zajete_id); 
-                ?>
+                <?php $czy_zajete = in_array($m['id'], $zajete_id); ?>
                 <div>
                     <?php if ($czy_zajete): ?>
                         <div class="fotel-label fotel-zajety">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></div>
@@ -187,8 +177,30 @@ try {
             <?php endforeach; ?>
         </div>
 
+        <div id="komunikat-bledu" style="display: none; color: #9e4747; margin-top: 30px; font-weight: bold; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">
+            Musisz wybrać przynajmniej jedno miejsce!
+        </div>
+
         <button type="submit" class="przycisk-koszyk">Przejdź do podsumowania</button>
     </form>
+
+    <script>
+        document.getElementById('formularz-rezerwacji').addEventListener('submit', function(wydarzenie) {
+            const zaznaczoneMiejsca = document.querySelectorAll('.fotel-checkbox:checked');
+            const komunikat = document.getElementById('komunikat-bledu');
+            
+            if (zaznaczoneMiejsca.length === 0) {
+                wydarzenie.preventDefault(); 
+                komunikat.style.display = 'block'; 
+            }
+        });
+        
+        document.querySelectorAll('.fotel-checkbox').forEach(fotel => {
+            fotel.addEventListener('change', () => {
+                document.getElementById('komunikat-bledu').style.display = 'none';
+            });
+        });
+    </script>
 
 </body>
 </html>
