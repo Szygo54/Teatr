@@ -33,7 +33,15 @@ try {
     <h1>Witamy w Teatrze Jura</h1>
     <div style="text-align: center; margin-bottom: 20px;">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <p>Zalogowano jako: <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong> | <a href="wyloguj.php">Wyloguj</a></p>
+            <p>Zalogowano jako: <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong> 
+            
+            <?php if ($_SESSION['user_rola'] === 'admin'): ?>
+                | <a href="admin.php" style="color: #d32f2f; font-weight: bold;">Panel Admina</a>
+            <?php else: ?>
+                | <a href="moje_bilety.php">Moje bilety</a>
+            <?php endif; ?>
+            
+            | <a href="wyloguj.php">Wyloguj</a></p>
         <?php else: ?>
             <p><a href="logowanie.php">Zaloguj się</a> | <a href="rejestracja.php">Zarejestruj się</a></p>
         <?php endif; ?>
