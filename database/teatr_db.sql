@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Cze 06, 2026 at 09:35 PM
+-- Generation Time: Cze 06, 2026 at 10:28 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -180,9 +180,18 @@ CREATE TABLE `spektakle` (
 --
 
 INSERT INTO `spektakle` (`id`, `tytul`, `opis`, `cena`, `plakat`) VALUES
-(1, 'Wariat i zakonnica', 'Szalona i pełna dowcipu inscenizacja dramatu Witkacego.', 85.00, 'zdjecia/wariat.jpg'),
-(2, 'Wesele', 'Klasyczny dramat Stanisława Wyspiańskiego w nowoczesnym wydaniu.', 110.00, 'zdjecia/wesele.jpg'),
-(3, 'Mistrz i Małgorzata', 'Niezwykła opowieść o miłości i wolności.', 95.00, 'zdjecia/mistrz.jpg');
+(1, 'Wariat i zakonnica', 'Co się stanie, gdy chłodna dyscyplina religijna zderzy się z nieokiełznanym ogniem szaleństwa? Wybuchowa mieszanka lęku, pasji i psychoanalizy w krzywym zwierciadle.', 85.00, 'zdjecia/wariat.jpg'),
+(2, 'Wesele', 'Inteligencja kontra wieś. Mity kontra codzienność. Duchy kontra ludzie. \"Wesele\" to najbardziej bezlitosne lustro, w jakim kiedykolwiek przejrzało się nasze społeczeństwo.', 110.00, 'zdjecia/wesele.jpg'),
+(3, 'Mistrz i Małgorzata', 'W Moskwie lat 30. pojawia się tajemniczy nieznajomy, który wywraca porządek miasta do góry nogami. Diabeł w przebraniu profesora, czarny kot chodzący na dwóch łapach i miłość, która jest w stanie pokonać nawet śmierć.', 95.00, 'zdjecia/mistrz.jpg'),
+(4, 'Folwark zwierzęcy', '\"Wszystkie zwierzęta są równe, ale niektóre są równiejsze od innych\". Orwell stworzył brutalną mapę drogową tego, jak marzenie o wolności zamienia się w koszmar dyktatury.', 80.00, 'zdjecia/folwark.png'),
+(5, 'O kotach', 'Mają w sobie coś, czego nam brakuje: absolutny spokój i pogardę dla konwenansów. Teatralny wieczór pełen cynicznego humoru i gorzkiej refleksji.', 45.00, 'zdjecia/kot.jpg'),
+(6, 'Makbet', 'W mrocznych zakamarkach Szkocji ambicja bierze górę nad lojalnością, a przeznaczenie splata się z szaleństwem. Czy Makbet zdoła udźwignąć ciężar korony zdobytej krwią? Zanurz się w studium upadku człowieka, dla którego każda kolejna decyzja prowadzi prosto w otchłań.', 90.00, 'zdjecia/makbet.jpg'),
+(7, 'Mistrz i Małgorzata', 'W Moskwie lat 30. pojawia się tajemniczy nieznajomy, który wywraca porządek miasta do góry nogami. Diabeł w przebraniu profesora, czarny kot chodzący na dwóch łapach i miłość, która jest w stanie pokonać nawet śmierć.', 95.00, 'zdjecia/mistrz.jpg'),
+(8, 'Pijacy', 'Wino, karty i kłótnie o nic. Błyskotliwa satyra na obyczaje, która nawet po 250 latach nic nie straciła na aktualności.', 70.00, 'zdjecia/pijacy.jpg'),
+(9, 'Romeo i Julia', 'Dwa rody, jedna nienawiść i miłość, która nie miała prawa się zdarzyć. Historia Romea i Julii to opowieść o buncie młodości przeciwko skostniałym zasadom świata dorosłych.', 85.00, 'zdjecia/romeo.png'),
+(10, 'Wariat i zakonnica', 'Co się stanie, gdy chłodna dyscyplina religijna zderzy się z nieokiełznanym ogniem szaleństwa? Wybuchowa mieszanka lęku, pasji i psychoanalizy w krzywym zwierciadle.', 85.00, 'zdjecia/wariat.jpg'),
+(11, 'Wesele', 'Inteligencja kontra wieś. Mity kontra codzienność. Duchy kontra ludzie. \"Wesele\" to najbardziej bezlitosne lustro, w jakim kiedykolwiek przejrzało się nasze społeczeństwo.', 110.00, 'zdjecia/wesele.jpg'),
+(12, 'Zbrodnia i kara', 'Gdzie kończy się granica między jednostką wybitną a zwykłym zbrodniarzem? Rodion Raskolnikow, przekonany o własnej wyjątkowości, podejmuje próbę, która na zawsze zmienia jego życie. Zanurz się w otchłań ludzkiego sumienia, gdzie każdy krok ku wolności staje się coraz cięższym łańcuchem winy.', 95.00, 'zdjecia/zbrodnia.jpg');
 
 -- --------------------------------------------------------
 
@@ -204,7 +213,16 @@ INSERT INTO `terminy` (`id`, `spektakl_id`, `data_wystawienia`) VALUES
 (1, 1, '2026-07-15 19:00:00'),
 (2, 2, '2026-07-20 18:30:00'),
 (3, 2, '2026-07-21 18:30:00'),
-(4, 3, '2026-07-25 19:00:00');
+(4, 3, '2026-07-25 19:00:00'),
+(5, 1, '2026-07-10 19:00:00'),
+(6, 2, '2026-07-11 16:00:00'),
+(7, 3, '2026-07-12 19:00:00'),
+(8, 4, '2026-07-13 19:00:00'),
+(9, 5, '2026-07-14 18:00:00'),
+(10, 6, '2026-07-15 19:00:00'),
+(11, 7, '2026-07-16 19:00:00'),
+(12, 8, '2026-07-17 19:00:00'),
+(13, 9, '2026-07-18 19:00:00');
 
 -- --------------------------------------------------------
 
@@ -289,13 +307,13 @@ ALTER TABLE `rezerwacje`
 -- AUTO_INCREMENT for table `spektakle`
 --
 ALTER TABLE `spektakle`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `terminy`
 --
 ALTER TABLE `terminy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `uzytkownicy`

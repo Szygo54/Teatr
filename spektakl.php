@@ -45,13 +45,12 @@ try {
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         
         .spektakl-layout { display: flex; gap: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .kolumna-lewa { flex: 1; }
-        .kolumna-prawa { flex: 1; display: flex; flex-direction: column; }
+        .kolumna-lewa { flex: 0.8; } 
+        .kolumna-prawa { flex: 1.2; display: flex; flex-direction: column; }
         
-        /* PLAKAT: Teraz zaciąga ścieżkę z bazy */
-        .plakat-duzy { width: 100%; height: 600px; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 5px; }
-        .plakat-duzy img { width: 100%; height: 100%; object-fit: cover; }
-        
+        /* Zmniejszamy wysokość plakatu */
+        .plakat-duzy { width: 100%; height: 500px; background: #262626; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 5px; }
+        .plakat-duzy img { width: 100%; height: 100%; object-fit: contain; }
         .tytul-spektaklu { font-size: 42px; color: #fff; margin: 0 0 20px 0; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; }
         .opis-spektaklu { font-size: 16px; line-height: 1.8; color: #bbb; margin-bottom: 40px; flex-grow: 1; }
         

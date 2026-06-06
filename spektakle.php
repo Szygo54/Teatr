@@ -3,9 +3,8 @@ session_start();
 require_once 'database.php';
 
 try {
-    // Używamy GROUP BY, żeby wyciągnąć sztuki bez powtórzeń. 
-    // MIN(id) sprawia, że link prowadzi do najbliższego wystawienia tej sztuki.
-    $stmt = $pdo->query("SELECT MIN(id) as id, tytul, opis FROM Spektakle GROUP BY tytul");
+    // NAPRAWIONE ZAPYTANIE: Dodano 'plakat' do listy pobieranych pól
+    $stmt = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle GROUP BY tytul");
     $sztuki = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (\PDOException $e) {
     die("Błąd bazy danych: " . $e->getMessage());
@@ -29,7 +28,11 @@ try {
         .siatka-plakatow { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
         .karta-sztuki { background: #262626; border-radius: 8px; overflow: hidden; text-decoration: none; transition: transform 0.3s; display: flex; flex-direction: column; }
         .karta-sztuki:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        .mini-plakat { height: 400px; background: #333; display: flex; align-items: center; justify-content: center; color: #666; font-weight: bold; letter-spacing: 2px; }
+        
+        /* NAPRAWIONE: Wyświetlanie obrazka */
+        .mini-plakat { height: 600px; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .mini-plakat img { width: 100%; height: 100%; object-fit: cover; }
+        
         .mini-tresc { padding: 25px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 24px; text-transform: uppercase; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
@@ -52,7 +55,9 @@ try {
         <div class="siatka-plakatow">
             <?php foreach ($sztuki as $sztuka): ?>
                 <a href="spektakl.php?id=<?= $sztuka['id'] ?>" class="karta-sztuki">
-                    <div class="mini-plakat">MIEJSCE NA PLAKAT</div>
+                    <div class="mini-plakat">
+                        <img src="<?= htmlspecialchars($sztuka['plakat']) ?>" alt="<?= htmlspecialchars($sztuka['tytul']) ?>">
+                    </div>
                     <div class="mini-tresc">
                         <h3 class="mini-tytul"><?= htmlspecialchars($sztuka['tytul']) ?></h3>
                     </div>

@@ -29,6 +29,9 @@ function polskiMiesiac($numerMiesiaca) {
     $miesiace = ['', 'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
     return $miesiace[(int)$numerMiesiaca];
 }
+// 3. Spis sztuk do kafelków z plakatami (ograniczone do pierwszych 4)
+    $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
+    $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +80,7 @@ function polskiMiesiac($numerMiesiaca) {
         .siatka-plakatow { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
         .karta-sztuki { background: #262626; border-radius: 8px; overflow: hidden; text-decoration: none; transition: 0.3s; display: block; }
         .karta-sztuki:hover { transform: scale(1.03); }
-        .mini-plakat { height: 350px; background: #333; }
+        .mini-plakat { height: 400px; background: #333; }
         .mini-plakat img { width: 100%; height: 100%; object-fit: cover; }
         .mini-tresc { padding: 20px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 20px; text-transform: uppercase; }
