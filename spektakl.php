@@ -98,32 +98,39 @@ try {
         .btn-wielki { display: block; background: #829356; color: white; text-align: center; padding: 20px; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase; border-radius: 5px; transition: 0.3s; }
         .btn-wielki:hover { background: #6a7944; }
 
-        .terminy-sekcja { margin-top: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .terminy-naglowek { color: #829356; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; }
-        .terminy-siatka { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .termin-karta { background: #1a1a1a; padding: 20px; border-radius: 5px; border-left: 4px solid #829356; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-        .termin-karta:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
-        .termin-info p { margin: 5px 0; }
-        .termin-data { font-size: 20px; font-weight: bold; color: #fff; }
-        .termin-godzina { font-size: 14px; color: #aaa; }
-        .termin-btn { background: #829356; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        .termin-btn:hover { background: #6a7944; }
+        /* ZMIENIONY STYL: Minimalistyczne terminy spektakli */
+        .terminy-sekcja { margin-top: 50px; background: transparent; padding: 0; box-shadow: none; border-radius: 0; }
+        .terminy-naglowek { color: #fff; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; letter-spacing: 2px; }
+        .terminy-siatka { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        
+        .termin-karta { background: transparent; padding: 20px; border: 1px solid #333; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
+        .termin-karta:hover { border-color: #829356; background: rgba(130, 147, 86, 0.05); }
+        
+        .termin-info { display: flex; flex-direction: column; gap: 5px; }
+        .termin-info p { margin: 0; }
+        .termin-data { font-size: 24px; font-weight: 300; color: #fff; letter-spacing: 1px; }
+        .termin-godzina { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .termin-btn { display: flex; align-items: center; color: #666; text-decoration: none; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; }
+        .termin-btn::after { content: '→'; margin-left: 8px; font-size: 16px; transition: transform 0.3s ease; }
+        
+        .termin-karta:hover .termin-btn { color: #829356; }
+        .termin-karta:hover .termin-btn::after { transform: translateX(5px); color: #829356; }
 
         .obsada-sekcja { margin-top: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .obsada-naglowek { color: #829356; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; }
         .aktorzy-siatka { display: flex; flex-wrap: wrap; gap: 40px; justify-content: flex-start; }
         .aktor-karta { text-align: center; width: 200px; }
+        
+        /* ZMIENIONY STYL: Usunięto hover (statyczne zdjęcie) */
         .aktor-zdjecie { 
-            width: 140px; 
-            height: 190px; 
+            width: 190px; 
+            height: 270px; 
             border-radius: 8px; 
             object-fit: cover; 
-            border: 3px solid #1a1a1a; 
             margin-bottom: 15px; 
-            transition: 0.3s; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+            
         }
-        .aktor-karta:hover .aktor-zdjecie { border-color: #829356; transform: scale(1.05); }
         .aktor-imie { font-size: 16px; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
         .aktor-specjalizacja { font-size: 12px; color: #aaa; text-transform: uppercase; }
     </style>
