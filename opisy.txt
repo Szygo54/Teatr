@@ -28,10 +28,5 @@ Folwark
 
 
 Plan działania:
-stopka, 
-naprawić header w spektakl i spektakle i moje bilety 
-naprawić bilet
 admin musi mieć opcje dodawania plakatów
-i kolor nazwy panel admina na pasku zadań lekka czerwień
 telefon
-odchatowić aktorów
