@@ -53,12 +53,10 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
         
-        /* Ujednolicony układ ze spektakli */
         .kontener-sekcji { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         
-        /* Tabela biletów wewnątrz kontenera */
         .panel { background: #262626; padding: 30px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 100%; box-sizing: border-box; }
         table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: left; }
         th, td { padding: 16px; border-bottom: 1px solid #444; }
@@ -67,12 +65,39 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         
         .btn-pdf { background-color: #829356; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .btn-pdf:hover { background-color: #6a7944; }
-        
-        /* Szablony PDF */
-        .szablon-bilet { display: none; }
     </style>
 </head>
 <body>
+
+    <?php if (!empty($bilety)): ?>
+        <?php foreach ($bilety as $b): ?>
+            <div id="szablon-<?= $b['rezerwacja_id'] ?>" style="background-color: #1a1a1a; color: #e0e0e0; padding: 40px; border: 10px solid #829356; box-sizing: border-box; width: 650px; display:none;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <img src="<?= $logo_base64 ?>" style="max-width: 180px;" alt="Logo Teatru">
+                </div>
+                <div style="background-color: #262626; padding: 25px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
+                    <div style="flex: 1; padding-right: 20px;">
+                        <h2 style="margin-top: 0; color: #ffffff;"><?= htmlspecialchars($b['tytul']) ?></h2>
+                        <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($b['data_wystawienia'])) ?></p>
+                        <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
+                        <h3 style="color: #829356; margin-bottom: 5px;">Miejsca:</h3>
+                        <ul style="color: #cccccc; margin-top: 5px; padding-left: 20px;">
+                            <li>Rząd <strong style="color: #ffffff;"><?= htmlspecialchars($b['rzad']) ?></strong> | Miejsce <strong style="color: #ffffff;"><?= htmlspecialchars($b['numer']) ?></strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="text-align: center; background: #ffffff; padding: 15px; border-radius: 10px; border: 3px solid #829356; width: 140px;">
+                        <?php if ($qr_base64): ?>
+                            <img src="<?= $qr_base64 ?>" alt="Kod QR" style="width: 100%; height: auto; display: block;">
+                        <?php else: ?>
+                            <div style="width: 100%; height: 140px; background: #eee; line-height: 140px; color: #333; font-size: 12px;">Brak QR</div>
+                        <?php endif; ?>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: bold; color: #000;">Okaż przy wejściu</p>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
     <div class="top-bar">
         <div>Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($imie_uzytkownika) ?></strong></div>
@@ -108,58 +133,23 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
                 </table>
             <?php endif; ?>
         </div>
-        
-        <div id="ukryte-szablony">
-            <?php if (!empty($bilety)): ?>
-                <?php foreach ($bilety as $b): ?>
-                    <div id="szablon-<?= $b['rezerwacja_id'] ?>" class="szablon-bilet" style="background-color: #1a1a1a; color: #e0e0e0; padding: 40px; border: 10px solid #829356; box-sizing: border-box; width: 650px;">
-                        <div style="text-align: center; margin-bottom: 30px;">
-                            <img src="<?= $logo_base64 ?>" style="max-width: 180px;" alt="Logo Teatru">
-                        </div>
-                        <div style="background-color: #262626; padding: 25px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
-                            <div style="flex: 1; padding-right: 20px;">
-                                <h2 style="margin-top: 0; color: #ffffff;"><?= htmlspecialchars($b['tytul']) ?></h2>
-                                <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($b['data_wystawienia'])) ?></p>
-                                <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
-                                <h3 style="color: #829356; margin-bottom: 5px;">Miejsce:</h3>
-                                <ul style="color: #cccccc; margin-top: 5px; padding-left: 20px;">
-                                    <li>Rząd <strong style="color: #ffffff;"><?= htmlspecialchars($b['rzad']) ?></strong> | Miejsce <strong style="color: #ffffff;"><?= htmlspecialchars($b['numer']) ?></strong></li>
-                                </ul>
-                            </div>
-                            
-                            <div style="text-align: center; background: #ffffff; padding: 15px; border-radius: 10px; border: 3px solid #829356; width: 140px;">
-                                <?php if ($qr_base64): ?>
-                                    <img src="<?= $qr_base64 ?>" alt="Kod QR" style="width: 100%; height: auto; display: block;">
-                                <?php else: ?>
-                                    <div style="width: 100%; height: 140px; background: #eee; line-height: 140px; color: #333; font-size: 12px;">Brak QR</div>
-                                <?php endif; ?>
-                                <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: bold; color: #000;">Okaż przy wejściu</p>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
     </div>
 
     <script>
+        // Skrypt żywcem z platnosc.php
         function generujBilet(id) {
             const el = document.getElementById('szablon-' + id);
-            
-            // Odkrywamy na chwilę przed zrzutem
             el.style.display = 'block'; 
 
             const opcje = {
                 margin:       0.5,
                 filename:     'Bilet_Teatr_Jura_' + id + '.pdf',
-                image:        { type: 'jpeg', quality: 1 },
-                // Zwiększony windowWidth to ostateczna tarcza na obcinanie z prawej strony
-                html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1024 },
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
             
             html2pdf().set(opcje).from(el).save().then(() => {
-                // Po zrobieniu zrzutu wracamy do ukrycia elementu
                 el.style.display = 'none'; 
             });
         }
