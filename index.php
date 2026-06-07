@@ -39,30 +39,29 @@ function polskiMiesiac($numerMiesiaca) {
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teatr Jura - Strona Główna</title>
     <style>
         html, body { 
-    height: 100%; 
-    margin: 0; 
-    padding: 0; 
-}
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+        }
 
-body { 
-    font-family: 'Segoe UI', sans-serif; 
-    background-color: #1a1a1a; 
-    color: #e0e0e0; 
-    
-    /* Właściwości Flexboxa potrzebne dla stopki: */
-    display: flex; 
-    flex-direction: column; 
-    min-height: 100vh; 
-}
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
 
-/* Nowy znacznik main, który rozpycha stronę */
-main {
-    flex: 1 0 auto; 
-    padding-bottom: 50px; /* Zastępuje Twoje wcześniejsze padding-bottom: 80px z body */
-}
+        main {
+            flex: 1 0 auto; 
+            padding-bottom: 50px; 
+        }
+        
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
@@ -70,6 +69,7 @@ main {
         .top-bar .link-admin { color: #9e4747; } 
         
         .header-sekcja { text-align: center; margin: 20px 20px 40px 20px; }
+        .header-sekcja h1 { color: white; font-size: 48px; margin: 0; text-transform: uppercase; letter-spacing: 5px; }
         .podtytul { color: #aaaaaa; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-top: 5px; }
         .logo-teatru { max-width: 120px; height: auto; margin-bottom: 5px; }
 
@@ -87,9 +87,8 @@ main {
         .hero-tytul { font-size: 42px; color: white; margin: 0 0 10px 0; text-transform: uppercase; }
         .hero-info { color: #ccc; font-size: 16px; }
 
-        /* MINIMALISTYCZNY HARMONOGRAM Z KALENDARIUM */
+        /* HARMONOGRAM */
         .lista-spektakli { display: flex; flex-direction: column; }
-        
         .wiersz-spektaklu { 
             display: grid; 
             grid-template-columns: 80px 1fr auto; 
@@ -100,35 +99,17 @@ main {
             border-bottom: 1px solid #222;
             transition: all 0.3s ease;
         }
-        
         .w-data { text-align: left; }
         .w-dzien { font-size: 32px; font-weight: 300; color: #fff; line-height: 1; margin-bottom: 5px; transition: color 0.3s; }
         .w-miesiac { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
-        
         .w-info { display: flex; flex-direction: column; gap: 5px; }
         .w-czas { font-size: 13px; color: #666; letter-spacing: 1px; }
         .w-tytul-tekst { font-size: 22px; color: #cecdcd; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
         
         .w-akcja { text-align: right; }
-        .btn-kup { 
-            display: flex; 
-            align-items: center;
-            color: #666; 
-            text-decoration: none; 
-            font-weight: normal; 
-            text-transform: uppercase; 
-            font-size: 12px;
-            letter-spacing: 2px;
-            transition: all 0.3s ease; 
-        }
-        .btn-kup::after {
-            content: '→';
-            margin-left: 10px;
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
+        .btn-kup { display: flex; align-items: center; justify-content: flex-end; color: #666; text-decoration: none; font-weight: normal; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; transition: all 0.3s ease; }
+        .btn-kup::after { content: '→'; margin-left: 10px; font-size: 16px; transition: transform 0.3s ease; }
 
-        /* Interakcje (Hover) w Harmonogramie */
         .wiersz-spektaklu:hover .w-tytul-tekst { color: #fff; }
         .wiersz-spektaklu:hover .w-dzien { color: #829356; }
         .wiersz-spektaklu:hover .btn-kup { color: #829356; }
@@ -143,65 +124,80 @@ main {
         .mini-tresc { padding: 20px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 20px; text-transform: uppercase; }
 
-        /* EDYTORIALOWY STYL AKTORÓW (zaktualizowany) */
-        .siatka-aktorow-index { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 40px; 
-        }
-        
-        .karta-aktora-index { 
-            text-align: left; 
-            cursor: pointer;
-        }
+        /* AKTORZY */
+        .siatka-aktorow-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+        .karta-aktora-index { text-align: left; cursor: pointer; }
+        .zdjecie-aktora-index { height: 380px; background: #111; overflow: hidden; margin-bottom: 15px; border-radius: 12px; }
+        .zdjecie-aktora-index img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%); transition: transform 0.6s ease, filter 0.6s ease; }
+        .karta-aktora-index:hover .zdjecie-aktora-index img { transform: scale(1.05); filter: grayscale(0%); }
+        .dane-aktora-index { padding: 0 5px; }
+        .imie-aktora-index { color: #e0e0e0; font-size: 18px; font-weight: 300; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .rola-aktora-index { color: #829356; font-size: 11px; margin: 0; letter-spacing: 3px; text-transform: uppercase; }
+        .karta-aktora-index:hover .imie-aktora-index { color: #fff; }
 
-        .zdjecie-aktora-index { 
-            height: 380px; 
-            background: #111; 
-            overflow: hidden; 
-            margin-bottom: 15px; 
-            position: relative;
-            border-radius: 12px;
-        }
-        
-        .zdjecie-aktora-index img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
-            filter: grayscale(100%); 
-            transition: transform 0.6s ease, filter 0.6s ease; 
-        }
+        /* ---------------------------------------------------- */
+        /* MEDIA QUERIES - MAGIA DLA TELEFONÓW (Poniżej 768px) */
+        /* ---------------------------------------------------- */
+        @media (max-width: 768px) {
+            /* Pasek nawigacji kaskadowy */
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; }
 
-        .karta-aktora-index:hover .zdjecie-aktora-index img { 
-            transform: scale(1.05); 
-            filter: grayscale(0%); 
-        }
+            /* ZMNIEJSZONA GÓRA I LOGO */
+            .logo-teatru { max-width: 70px; } 
+            .header-sekcja h1 { font-size: 28px; letter-spacing: 2px; margin-top: 10px; } 
+            .podtytul { font-size: 10px; letter-spacing: 2px; } 
+            .hero-tytul { font-size: 26px; }
+            .naglowek-sekcji a { font-size: 22px; }
 
-        .dane-aktora-index { 
-            padding: 0 5px; 
-        }
-        
-        .imie-aktora-index { 
-            color: #e0e0e0; 
-            font-size: 18px; 
-            font-weight: 300; 
-            margin: 0 0 5px 0; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            transition: color 0.3s;
-        }
-        
-        .rola-aktora-index { 
-            color: #829356; 
-            font-size: 11px; 
-            margin: 0; 
-            letter-spacing: 3px; 
-            text-transform: uppercase; 
-        }
+            /* Harmonogram - elementy pod sobą */
+            .wiersz-spektaklu { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+                text-align: center; 
+                padding: 20px 10px;
+            }
+            .w-data { text-align: center; }
+            .w-akcja { text-align: center; }
+            .btn-kup { justify-content: center; }
 
-        .karta-aktora-index:hover .imie-aktora-index {
-            color: #fff; 
+            /* PLAKATY W SIATCE 2xN NA TELEFONIE */
+            .siatka-plakatow { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 15px; 
+            }
+            .mini-plakat { height: 180px; } 
+            .mini-tresc { padding: 10px; }
+            .mini-tytul { font-size: 14px; }
+
+            /* Aktorzy - 2 kolumny na telefonach */
+            .siatka-aktorow-index { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 15px; 
+            }
+            .zdjecie-aktora-index { height: 180px; } 
+            .imie-aktora-index { font-size: 14px; }
+            .rola-aktora-index { font-size: 9px; }
+
+            /* MNIEJSZY FOOTER NA TELEFONIE */
+            .stopka-strony { 
+                padding: 15px 10px !important; 
+                font-size: 11px !important; 
+            }
+            /* ZMNIEJSZENIE MENU */
+            .top-bar { padding: 10px; font-size: 11px; }
+            .top-bar a { margin: 5px; }
+
+            /* ZMNIEJSZENIE PLAKATU HERO */
+            .hero-plakat { height: 250px; } /* Plakat jest teraz o połowę niższy */
+            .hero-tytul { font-size: 20px; } /* Mniejszy tytuł na telefonie */
+            .hero-tresc { padding: 15px; }
+
+            /* ZMNIEJSZENIE NAGŁÓWKÓW SEKCJI */
+            .naglowek-sekcji a { font-size: 18px; }
+
+            /* ... reszta Twoich reguł ... */
         }
     </style>
 </head>
@@ -227,7 +223,7 @@ main {
 
         <div class="header-sekcja">
             <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-teatru">
-            <h1 style="color: white; font-size: 48px; margin: 0; text-transform: uppercase; letter-spacing: 5px;">Teatr Jura</h1>
+            <h1>Teatr Jura</h1>
             <div class="podtytul">Aktualny repertuar i rezerwacja biletów online</div>
         </div>
 
