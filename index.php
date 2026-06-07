@@ -45,6 +45,8 @@ function polskiMiesiac($numerMiesiaca) {
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
+        .top-bar .link-akcent { color: #829356; }
+        .top-bar .link-admin { color: #9e4747; } 
         
         .header-sekcja { text-align: center; margin: 20px 20px 40px 20px; }
         .podtytul { color: #aaaaaa; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-top: 5px; }
@@ -139,9 +141,9 @@ function polskiMiesiac($numerMiesiaca) {
             <a href="kalendarium.php">Kalendarium</a>
             <a href="spektakle.php">Wszystkie Sztuki</a>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" style="color: #829356;">Moje bilety</a> 
+                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a> 
                 
-                <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php">Panel Admina</a><?php endif; ?>
+                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
                 <a href="wyloguj.php">Wyloguj</a>
             <?php else: ?>
                 <a href="logowanie.php">Zaloguj</a>
