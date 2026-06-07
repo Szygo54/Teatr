@@ -151,16 +151,21 @@ function polskiMiesiac($numerMiesiaca) {
             .hero-tytul { font-size: 26px; }
             .naglowek-sekcji a { font-size: 22px; }
 
-            /* Harmonogram - elementy pod sobą */
+            /* ZMNIEJSZONY I KOMPAKTOWY HARMONOGRAM (W jednej linii, mniejsze fonty) */
             .wiersz-spektaklu { 
-                grid-template-columns: 1fr; 
-                gap: 15px; 
-                text-align: center; 
-                padding: 20px 10px;
+                grid-template-columns: 50px 1fr auto; /* 3 dopasowane kolumny */
+                gap: 10px; 
+                text-align: left; 
+                padding: 15px 0;
             }
             .w-data { text-align: center; }
-            .w-akcja { text-align: center; }
-            .btn-kup { justify-content: center; }
+            .w-dzien { font-size: 22px; margin-bottom: 2px; }
+            .w-miesiac { font-size: 9px; }
+            .w-tytul-tekst { font-size: 14px; }
+            .w-czas { font-size: 10px; }
+            .w-akcja { text-align: right; }
+            .btn-kup { justify-content: flex-end; font-size: 10px; }
+            .btn-kup::after { font-size: 14px; margin-left: 5px; }
 
             /* PLAKATY W SIATCE 2xN NA TELEFONIE */
             .siatka-plakatow { 
@@ -190,14 +195,9 @@ function polskiMiesiac($numerMiesiaca) {
             .top-bar a { margin: 5px; }
 
             /* ZMNIEJSZENIE PLAKATU HERO */
-            .hero-plakat { height: 250px; } /* Plakat jest teraz o połowę niższy */
-            .hero-tytul { font-size: 20px; } /* Mniejszy tytuł na telefonie */
+            .hero-plakat { height: 250px; } 
+            .hero-tytul { font-size: 20px; } 
             .hero-tresc { padding: 15px; }
-
-            /* ZMNIEJSZENIE NAGŁÓWKÓW SEKCJI */
-            .naglowek-sekcji a { font-size: 18px; }
-
-            /* ... reszta Twoich reguł ... */
         }
     </style>
 </head>

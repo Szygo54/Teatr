@@ -28,5 +28,4 @@ Folwark
 
 
 Plan działania:
-admin musi mieć opcje dodawania plakatów
-telefon
+telefon: logowanie, rejestracja, panel admina, aktorzy, spektakle, kalendarium, moje bilety
