@@ -29,3 +29,4 @@ Folwark
 
 Plan działania:
 telefon: logowanie, rejestracja, panel admina, aktorzy, spektakle, kalendarium, moje bilety
+dodanie suwaka w panelu admina
