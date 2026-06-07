@@ -60,6 +60,7 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Przetwarzanie płatności - Teatr Jura</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -100,13 +101,13 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         #ekran-blik, #ekran-ladowania, #ekran-sukcesu { display: none; }
         
         .logo-blik { background: #000; color: #fff; padding: 5px 15px; border-radius: 4px; font-weight: bold; font-size: 24px; letter-spacing: 2px; display: inline-block; margin-bottom: 20px; }
-        .input-blik { font-size: 32px; letter-spacing: 15px; text-align: center; width: 250px; padding: 15px; border: 2px solid #444; border-radius: 8px; background: #333; color: #fff; margin-bottom: 20px; }
+        .input-blik { font-size: 32px; letter-spacing: 15px; text-align: center; width: 250px; padding: 15px; border: 2px solid #444; border-radius: 8px; background: #333; color: #fff; margin-bottom: 20px; box-sizing: border-box; }
         
         .input-blik::-webkit-outer-spin-button,
         .input-blik::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .input-blik[type=number] { -moz-appearance: textfield; }
 
-        .btn-potwierdz, .btn-pdf { background-color: #829356; color: #ffffff; padding: 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        .btn-potwierdz, .btn-pdf { background-color: #829356; color: #ffffff; padding: 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s; box-sizing: border-box; }
         .btn-potwierdz:hover, .btn-pdf:hover { background-color: #6a7944; }
         
         .spinner { border: 6px solid #333; border-top: 6px solid #829356; border-radius: 50%; width: 70px; height: 70px; animation: spin 1s linear infinite; margin: 30px auto; }
@@ -114,6 +115,22 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         
         .przycisk-powrot { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: #333; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
         .przycisk-powrot:hover { background-color: #444; }
+
+        /* RESPONSYWNOŚĆ MOBILNA */
+        @media (max-width: 768px) {
+            main { padding: 15px; }
+            .okno-platnosci { padding: 30px 15px; }
+            .logo-blik { font-size: 20px; }
+            .input-blik { 
+                width: 100%; 
+                max-width: 220px; 
+                font-size: 28px; 
+                letter-spacing: 10px; /* Zmniejszony odstęp dla małych ekranów */
+                padding: 12px;
+            }
+            .okno-platnosci h2 { font-size: 20px; }
+            .btn-potwierdz, .btn-pdf { font-size: 15px; padding: 15px; }
+        }
     </style>
 </head>
 <body>
