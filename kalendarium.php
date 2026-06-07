@@ -32,7 +32,23 @@ function polskiMiesiacPelny($numerMiesiaca) {
     <meta charset="UTF-8">
     <title>Kalendarium - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        html, body { height: 100%; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            /* To sprawia, że stopka spada na dół: */
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        
+        /* Selektor tagu (bez kropki) */
+        main {
+            flex: 1 0 auto; 
+            padding-bottom: 50px;
+        }
         
         /* --- IDENTYCZNY PASEK NAWIGACJI --- */
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
@@ -109,66 +125,68 @@ function polskiMiesiacPelny($numerMiesiaca) {
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-            <?php endif; ?>
+    <main>
+        <div class="top-bar">
+            <div>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+                <?php endif; ?>
+            </div>
+            <div>
+                <a href="index.php">Strona Główna</a>
+                <a href="spektakle.php">Repertuar</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+                    <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                    <a href="wyloguj.php">Wyloguj</a>
+                <?php else: ?>
+                    <a href="logowanie.php">Zaloguj się</a>
+                <?php endif; ?>
+            </div>
         </div>
-        <div>
-            <a href="index.php">Strona Główna</a>
-            <a href="spektakle.php">Repertuar</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
-                <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?>
-                <a href="logowanie.php">Zaloguj się</a>
-            <?php endif; ?>
-        </div>
-    </div>
 
-    <div class="kontener-sekcji">
-        <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Kalendarium</h2>
-        
-        <div class="lista-spektakli">
-            <?php if (empty($harmonogram)): ?>
-                <div class="brak-danych">Brak zaplanowanych spektakli w repertuarze.</div>
-            <?php else: ?>
-                <?php 
-                $ostatni_miesiac_rok = ''; 
-                foreach ($harmonogram as $s): 
-                    $timestamp = strtotime($s['data_wystawienia']);
-                    $dzien = date('d', $timestamp);
-                    $nr_miesiaca = date('n', $timestamp);
-                    $rok = date('Y', $timestamp);
-                    $skrot_miesiaca = polskiMiesiacSkrot($nr_miesiaca);
-                    
-                    $biezacy_miesiac_rok = $nr_miesiaca . '-' . $rok;
+        <div class="kontener-sekcji">
+            <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
+            <h2 class="naglowek-sekcji">Kalendarium</h2>
+            
+            <div class="lista-spektakli">
+                <?php if (empty($harmonogram)): ?>
+                    <div class="brak-danych">Brak zaplanowanych spektakli w repertuarze.</div>
+                <?php else: ?>
+                    <?php 
+                    $ostatni_miesiac_rok = ''; 
+                    foreach ($harmonogram as $s): 
+                        $timestamp = strtotime($s['data_wystawienia']);
+                        $dzien = date('d', $timestamp);
+                        $nr_miesiaca = date('n', $timestamp);
+                        $rok = date('Y', $timestamp);
+                        $skrot_miesiaca = polskiMiesiacSkrot($nr_miesiaca);
+                        
+                        $biezacy_miesiac_rok = $nr_miesiaca . '-' . $rok;
 
-                    if ($ostatni_miesiac_rok !== $biezacy_miesiac_rok) {
-                        echo "<div class='separator-miesiaca'>" . polskiMiesiacPelny($nr_miesiaca) . " $rok</div>";
-                        $ostatni_miesiac_rok = $biezacy_miesiac_rok;
-                    }
-                ?>
-                    <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
-                        <div class="w-data">
-                            <div class="w-dzien"><?= $dzien ?></div>
-                            <div class="w-miesiac"><?= $skrot_miesiaca ?></div>
-                        </div>
-                        <div class="w-info">
-                            <div class="w-czas">GODZ. <?= date('H:i', $timestamp) ?></div>
-                            <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
-                        </div>
-                        <div class="w-akcja">
-                            <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                        if ($ostatni_miesiac_rok !== $biezacy_miesiac_rok) {
+                            echo "<div class='separator-miesiaca'>" . polskiMiesiacPelny($nr_miesiaca) . " $rok</div>";
+                            $ostatni_miesiac_rok = $biezacy_miesiac_rok;
+                        }
+                    ?>
+                        <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
+                            <div class="w-data">
+                                <div class="w-dzien"><?= $dzien ?></div>
+                                <div class="w-miesiac"><?= $skrot_miesiaca ?></div>
+                            </div>
+                            <div class="w-info">
+                                <div class="w-czas">GODZ. <?= date('H:i', $timestamp) ?></div>
+                                <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
+                            </div>
+                            <div class="w-akcja">
+                                <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </div>
-    </div>
+    </main>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

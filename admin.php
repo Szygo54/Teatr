@@ -91,8 +91,14 @@ $topSpektakl = $stmtTop->fetch(PDO::FETCH_ASSOC);
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #1a1a1a; 
-            color: #e0e0e0;
-            margin: 0;
+            color: #e0e0e0; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        
+        main {
+            flex: 1 0 auto; 
             padding-bottom: 50px;
         }
 
@@ -320,148 +326,150 @@ $topSpektakl = $stmtTop->fetch(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
+    <main>
 
-    <div class="top-bar">
-        <div class="zalogowany-jako">
-            Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-        </div>
-        <div>
-            <a href="index.php">Wróć na stronę główną</a>
-            <a href="wyloguj.php">Wyloguj</a>
-        </div>
-    </div>
-
-    <div class="header-sekcja">
-        <h1>Teatr Jura</h1>
-        <div class="podtytul">Panel Zarządzania</div>
-    </div>
-
-    <div class="container">
-        
-        <?php if ($komunikat): ?>
-            <?php $czy_blad = strpos(strtolower($komunikat), 'błąd') !== false; ?>
-            <div class="komunikat <?= $czy_blad ? 'komunikat-blad' : 'komunikat-sukces' ?>">
-                <?= htmlspecialchars($komunikat) ?>
+        <div class="top-bar">
+            <div class="zalogowany-jako">
+                Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
             </div>
-        <?php endif; ?>
-
-        <div class="panel">
-            <h3>Podsumowanie Sprzedaży</h3>
-            <div class="dashboard-grid">
-                <div class="stat-karta">
-                    <div class="stat-tytul">Sprzedane bilety</div>
-                    <div class="stat-wartosc"><?= $liczba_biletow ?> <span>szt.</span></div>
-                </div>
-                
-                <div class="stat-karta">
-                    <div class="stat-tytul">Całkowity przychód</div>
-                    <div class="stat-wartosc"><?= number_format($laczny_przychod, 2, ',', ' ') ?> <span>PLN</span></div>
-                </div>
-                
-                <div class="stat-karta">
-                    <div class="stat-tytul">Hit repertuaru</div>
-                    <div class="stat-wartosc" style="font-size: 20px; line-height: 1.6;">
-                        <?php if ($topSpektakl && $topSpektakl['sprzedane'] > 0): ?>
-                            <?= htmlspecialchars($topSpektakl['tytul']) ?><br>
-                            <span style="color: #aaaaaa; font-size: 14px;">(<?= $topSpektakl['sprzedane'] ?> rezerwacji)</span>
-                        <?php else: ?>
-                            <span style="color: #aaaaaa; font-size: 16px;">Brak danych</span>
-                        <?php endif; ?>
-                    </div>
-                </div>
+            <div>
+                <a href="index.php">Wróć na stronę główną</a>
+                <a href="wyloguj.php">Wyloguj</a>
             </div>
         </div>
 
-        <div class="panel">
-            <h3>Dodaj nowy spektakl</h3>
-            <form method="POST" action="">
-                <div class="form-grid">
-                    <div>
-                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Tytuł sztuki</label>
-                        <input type="text" name="tytul" placeholder="Wpisz tytuł..." required>
-                    </div>
-                    <div>
-                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Data i godzina</label>
-                        <input type="datetime-local" name="data_wystawienia" required>
-                    </div>
-                    <div class="form-full">
-                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Cena biletu (PLN)</label>
-                        <input type="number" step="0.01" name="cena" placeholder="np. 80.00" required>
-                    </div>
-                    <div class="form-full">
-                        <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Opis spektaklu</label>
-                        <textarea name="opis" placeholder="Krótki opis sztuki..." rows="4" required></textarea>
-                    </div>
-                </div>
-                <button type="submit" name="dodaj_spektakl" class="btn-dodaj">Zapisz do repertuaru</button>
-            </form>
+        <div class="header-sekcja">
+            <h1>Teatr Jura</h1>
+            <div class="podtytul">Panel Zarządzania</div>
         </div>
 
-        <div class="panel">
-            <h3>Baza Rezerwacji (Bilety)</h3>
-            <?php if (empty($rezerwacje)): ?>
-                <p class="brak-danych">Aktualnie nie ma żadnych sprzedanych biletów.</p>
-            <?php else: ?>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <tr>
-                            <th>ID Ref.</th>
-                            <th>Klient</th>
-                            <th>E-mail</th>
-                            <th>Spektakl</th>
-                            <th>Miejsce (Rząd / Nr)</th>
-                            <th>Data zakupu</th>
-                            <th>Akcja</th>
-                        </tr>
-                        <?php foreach ($rezerwacje as $r): ?>
-                            <tr>
-                                <td>#<?= $r['rezerwacja_id'] ?></td>
-                                <td><strong><?= htmlspecialchars($r['imie']) ?></strong></td>
-                                <td><?= htmlspecialchars($r['email']) ?></td>
-                                <td><?= htmlspecialchars($r['tytul']) ?></td>
-                                <td>Rząd <?= $r['rzad'] ?>, Miejsce <?= $r['numer'] ?></td>
-                                <td><?= date('d.m.Y H:i', strtotime($r['data_zakupu'])) ?></td>
-                                <td>
-                                    <a href="admin.php?usun_bilet=<?= $r['rezerwacja_id'] ?>" class="btn-usun" onclick="return confirm('Czy na pewno chcesz anulować ten bilet? Miejsce automatycznie wróci do puli wolnych na widowni.');">Anuluj bilet</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
+        <div class="container">
+            
+            <?php if ($komunikat): ?>
+                <?php $czy_blad = strpos(strtolower($komunikat), 'błąd') !== false; ?>
+                <div class="komunikat <?= $czy_blad ? 'komunikat-blad' : 'komunikat-sukces' ?>">
+                    <?= htmlspecialchars($komunikat) ?>
                 </div>
             <?php endif; ?>
-        </div>
 
-        <div class="panel">
-            <h3>Aktualny Repertuar</h3>
-            <?php if (empty($spektakle)): ?>
-                <p class="brak-danych">Baza spektakli jest pusta.</p>
-            <?php else: ?>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tytuł</th>
-                            <th>Data wystawienia</th>
-                            <th>Cena</th>
-                            <th>Akcja</th>
-                        </tr>
-                        <?php foreach ($spektakle as $s): ?>
-                            <tr>
-                                <td><?= $s['id'] ?></td>
-                                <td><strong><?= htmlspecialchars($s['tytul']) ?></strong></td>
-                                <td><?= date('d.m.Y H:i', strtotime($s['data_wystawienia'])) ?></td>
-                                <td style="color: #829356; font-weight: bold;"><?= $s['cena'] ?> PLN</td>
-                                <td>
-                                    <a href="admin.php?usun_spektakl=<?= $s['id'] ?>" class="btn-usun" onclick="return confirm('UWAGA: Usunięcie sztuki sprawi, że zniknie ona ze strony, a wszystkie kupione na nią bilety zostaną bezpowrotnie usunięte z bazy! Kontynuować?');">Usuń sztukę</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
+            <div class="panel">
+                <h3>Podsumowanie Sprzedaży</h3>
+                <div class="dashboard-grid">
+                    <div class="stat-karta">
+                        <div class="stat-tytul">Sprzedane bilety</div>
+                        <div class="stat-wartosc"><?= $liczba_biletow ?> <span>szt.</span></div>
+                    </div>
+                    
+                    <div class="stat-karta">
+                        <div class="stat-tytul">Całkowity przychód</div>
+                        <div class="stat-wartosc"><?= number_format($laczny_przychod, 2, ',', ' ') ?> <span>PLN</span></div>
+                    </div>
+                    
+                    <div class="stat-karta">
+                        <div class="stat-tytul">Hit repertuaru</div>
+                        <div class="stat-wartosc" style="font-size: 20px; line-height: 1.6;">
+                            <?php if ($topSpektakl && $topSpektakl['sprzedane'] > 0): ?>
+                                <?= htmlspecialchars($topSpektakl['tytul']) ?><br>
+                                <span style="color: #aaaaaa; font-size: 14px;">(<?= $topSpektakl['sprzedane'] ?> rezerwacji)</span>
+                            <?php else: ?>
+                                <span style="color: #aaaaaa; font-size: 16px;">Brak danych</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
-            <?php endif; ?>
+            </div>
+
+            <div class="panel">
+                <h3>Dodaj nowy spektakl</h3>
+                <form method="POST" action="">
+                    <div class="form-grid">
+                        <div>
+                            <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Tytuł sztuki</label>
+                            <input type="text" name="tytul" placeholder="Wpisz tytuł..." required>
+                        </div>
+                        <div>
+                            <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Data i godzina</label>
+                            <input type="datetime-local" name="data_wystawienia" required>
+                        </div>
+                        <div class="form-full">
+                            <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Cena biletu (PLN)</label>
+                            <input type="number" step="0.01" name="cena" placeholder="np. 80.00" required>
+                        </div>
+                        <div class="form-full">
+                            <label style="color: #aaa; font-size: 12px; text-transform: uppercase;">Opis spektaklu</label>
+                            <textarea name="opis" placeholder="Krótki opis sztuki..." rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" name="dodaj_spektakl" class="btn-dodaj">Zapisz do repertuaru</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Baza Rezerwacji (Bilety)</h3>
+                <?php if (empty($rezerwacje)): ?>
+                    <p class="brak-danych">Aktualnie nie ma żadnych sprzedanych biletów.</p>
+                <?php else: ?>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <tr>
+                                <th>ID Ref.</th>
+                                <th>Klient</th>
+                                <th>E-mail</th>
+                                <th>Spektakl</th>
+                                <th>Miejsce (Rząd / Nr)</th>
+                                <th>Data zakupu</th>
+                                <th>Akcja</th>
+                            </tr>
+                            <?php foreach ($rezerwacje as $r): ?>
+                                <tr>
+                                    <td>#<?= $r['rezerwacja_id'] ?></td>
+                                    <td><strong><?= htmlspecialchars($r['imie']) ?></strong></td>
+                                    <td><?= htmlspecialchars($r['email']) ?></td>
+                                    <td><?= htmlspecialchars($r['tytul']) ?></td>
+                                    <td>Rząd <?= $r['rzad'] ?>, Miejsce <?= $r['numer'] ?></td>
+                                    <td><?= date('d.m.Y H:i', strtotime($r['data_zakupu'])) ?></td>
+                                    <td>
+                                        <a href="admin.php?usun_bilet=<?= $r['rezerwacja_id'] ?>" class="btn-usun" onclick="return confirm('Czy na pewno chcesz anulować ten bilet? Miejsce automatycznie wróci do puli wolnych na widowni.');">Anuluj bilet</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="panel">
+                <h3>Aktualny Repertuar</h3>
+                <?php if (empty($spektakle)): ?>
+                    <p class="brak-danych">Baza spektakli jest pusta.</p>
+                <?php else: ?>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tytuł</th>
+                                <th>Data wystawienia</th>
+                                <th>Cena</th>
+                                <th>Akcja</th>
+                            </tr>
+                            <?php foreach ($spektakle as $s): ?>
+                                <tr>
+                                    <td><?= $s['id'] ?></td>
+                                    <td><strong><?= htmlspecialchars($s['tytul']) ?></strong></td>
+                                    <td><?= date('d.m.Y H:i', strtotime($s['data_wystawienia'])) ?></td>
+                                    <td style="color: #829356; font-weight: bold;"><?= $s['cena'] ?> PLN</td>
+                                    <td>
+                                        <a href="admin.php?usun_spektakl=<?= $s['id'] ?>" class="btn-usun" onclick="return confirm('UWAGA: Usunięcie sztuki sprawi, że zniknie ona ze strony, a wszystkie kupione na nią bilety zostaną bezpowrotnie usunięte z bazy! Kontynuować?');">Usuń sztukę</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+
         </div>
-
-    </div>
-
+    </main>
+    <?php include 'footer.php'; ?> 
 </body>
 </html>

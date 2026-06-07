@@ -17,7 +17,24 @@ try {
     <meta charset="UTF-8">
     <title>Zespół Aktorski - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        /* --- NAPRAWIONE STYLE DLA STOPKI I BODY --- */
+        html, body { height: 100%; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            /* To sprawia, że stopka spada na dół: */
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        
+        /* Selektor tagu (bez kropki) */
+        main {
+            flex: 1 0 auto; 
+            padding-bottom: 50px;
+        }
         
         /* --- PASEK NAWIGACJI --- */
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
@@ -53,7 +70,7 @@ try {
             overflow: hidden; 
             margin-bottom: 15px; 
             position: relative;
-            border-radius: 12px; /* Lekkie zaokrąglenie zdjęć */
+            border-radius: 12px; 
         }
         
         .zdjecie-aktora img { 
@@ -73,7 +90,7 @@ try {
 
         /* Tekst pod zdjęciem */
         .dane-aktora { 
-            padding: 0 5px; /* Minimalne odsunięcie od lewej krawędzi dla wyrównania do zaokrąglenia */
+            padding: 0 5px; 
         }
         
         .imie-aktora { 
@@ -100,44 +117,46 @@ try {
     </style>
 </head>
 <body>
+    <main>
 
-    <div class="top-bar">
-        <div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-            <?php endif; ?>
+        <div class="top-bar">
+            <div>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+                <?php endif; ?>
+            </div>
+            <div>
+                <a href="index.php">Strona Główna</a>
+                <a href="spektakle.php">Repertuar</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+                    <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                    <a href="wyloguj.php">Wyloguj</a>
+                <?php else: ?>
+                    <a href="logowanie.php">Zaloguj się</a>
+                <?php endif; ?>
+            </div>
         </div>
-        <div>
-            <a href="index.php">Strona Główna</a>
-            <a href="spektakle.php">Repertuar</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
-                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?>
-                <a href="logowanie.php">Zaloguj się</a>
-            <?php endif; ?>
-        </div>
-    </div>
 
-    <div class="kontener-sekcji">
-        <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Nasz Zespół</h2>
-        
-        <div class="siatka-aktorow">
-            <?php foreach ($aktorzy as $aktor): ?>
-                <div class="karta-aktora">
-                    <div class="zdjecie-aktora">
-                        <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>">
+        <div class="kontener-sekcji">
+            <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
+            <h2 class="naglowek-sekcji">Nasz Zespół</h2>
+            
+            <div class="siatka-aktorow">
+                <?php foreach ($aktorzy as $aktor): ?>
+                    <div class="karta-aktora">
+                        <div class="zdjecie-aktora">
+                            <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>">
+                        </div>
+                        <div class="dane-aktora">
+                            <h3 class="imie-aktora"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
+                            <p class="rola-aktora"><?= htmlspecialchars($aktor['specjalizacja']) ?></p>
+                        </div>
                     </div>
-                    <div class="dane-aktora">
-                        <h3 class="imie-aktora"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
-                        <p class="rola-aktora"><?= htmlspecialchars($aktor['specjalizacja']) ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-
+    </main>
+    <?php include 'footer.php'; ?>            
 </body>
 </html>

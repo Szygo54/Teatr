@@ -63,7 +63,38 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
     <title>Przetwarzanie płatności - Teatr Jura</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        /* KLUCZOWE STYLE DLA STOPKI I UKŁADU */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        main {
+            flex: 1 0 auto; /* Wypycha stopkę w dół */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centruje okienko płatności */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #ukryte-szablony {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -9999;
+            pointer-events: none;
+        }
+
+        /* RESZTA STYLÓW */
         .okno-platnosci { background-color: #262626; padding: 40px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; box-sizing: border-box; }
         
         #ekran-blik, #ekran-ladowania, #ekran-sukcesu { display: none; }
@@ -87,61 +118,67 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 </head>
 <body>
 
-    <?php if ($sukces_db): ?>
-    <div id="szablon-bilet-pdf" style="background-color: #1a1a1a; color: #e0e0e0; padding: 40px; border: 10px solid #829356; box-sizing: border-box; width: 650px; display:none;">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <img src="<?= $logo_base64 ?>" style="max-width: 180px;" alt="Logo Teatru">
-        </div>
-        <div style="background-color: #262626; padding: 25px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
-            <div style="flex: 1; padding-right: 20px;">
-                <h2 style="margin-top: 0; color: #ffffff;"><?= htmlspecialchars($info_spektakl['tytul']) ?></h2>
-                <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($info_spektakl['data_wystawienia'])) ?></p>
-                <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
-                <h3 style="color: #829356; margin-bottom: 5px;">Miejsca:</h3>
-                <ul style="color: #cccccc; margin-top: 5px; padding-left: 20px;">
-                    <?php foreach($info_miejsca as $m): ?>
-                        <li>Rząd <strong style="color: #ffffff;"><?= htmlspecialchars($m['rzad']) ?></strong> | Miejsce <strong style="color: #ffffff;"><?= htmlspecialchars($m['numer']) ?></strong></li>
-                    <?php endforeach; ?>
-                </ul>
+    <div id="ukryte-szablony">
+        <?php if ($sukces_db): ?>
+        <div id="szablon-bilet-pdf" style="background-color: #1a1a1a; color: #e0e0e0; padding: 40px; border: 10px solid #829356; box-sizing: border-box; width: 650px; display:none; margin: 0;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="<?= $logo_base64 ?>" style="max-width: 180px;" alt="Logo Teatru">
             </div>
-            
-            <div style="text-align: center; background: #ffffff; padding: 15px; border-radius: 10px; border: 3px solid #829356; width: 140px;">
-                <?php if ($qr_base64): ?>
-                    <img src="<?= $qr_base64 ?>" alt="Kod QR" style="width: 100%; height: auto; display: block;">
+            <div style="background-color: #262626; padding: 25px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
+                <div style="flex: 1; padding-right: 20px;">
+                    <h2 style="margin-top: 0; color: #ffffff;"><?= htmlspecialchars($info_spektakl['tytul']) ?></h2>
+                    <p><strong>Termin:</strong> <?= date('d.m.Y, H:i', strtotime($info_spektakl['data_wystawienia'])) ?></p>
+                    <p><strong>Właściciel:</strong> <?= htmlspecialchars($imie_uzytkownika) ?></p>
+                    <h3 style="color: #829356; margin-bottom: 5px;">Miejsca:</h3>
+                    <ul style="color: #cccccc; margin-top: 5px; padding-left: 20px;">
+                        <?php foreach($info_miejsca as $m): ?>
+                            <li>Rząd <strong style="color: #ffffff;"><?= htmlspecialchars($m['rzad']) ?></strong> | Miejsce <strong style="color: #ffffff;"><?= htmlspecialchars($m['numer']) ?></strong></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; background: #ffffff; padding: 15px; border-radius: 10px; border: 3px solid #829356; width: 140px;">
+                    <?php if ($qr_base64): ?>
+                        <img src="<?= $qr_base64 ?>" alt="Kod QR" style="width: 100%; height: auto; display: block;">
+                    <?php else: ?>
+                        <div style="width: 100%; height: 140px; background: #eee; line-height: 140px; color: #333; font-size: 12px;">Brak QR</div>
+                    <?php endif; ?>
+                    <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: bold; color: #000;">Okaż przy wejściu</p>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <main>
+        <div class="okno-platnosci">
+            <div id="ekran-blik">
+                <div class="logo-blik">BLIK</div>
+                <h2>Wprowadź kod</h2>
+                <input type="number" id="kod-blik" class="input-blik" placeholder="000000" maxlength="6">
+                <button id="btn-potwierdz-blik" class="btn-potwierdz">Potwierdź płatność</button>
+            </div>
+
+            <div id="ekran-ladowania">
+                <h2>Łączenie z operatorem...</h2>
+                <div class="spinner"></div>
+            </div>
+
+            <div id="ekran-sukcesu">
+                <?php if ($sukces_db): ?>
+                    <h1 style="color: #829356;">✓ Płatność zaakceptowana!</h1>
+                    <button class="btn-pdf" onclick="pobierzPDF()">Pobierz bilet (PDF)</button>
+                    <br><a href="moje_bilety.php" class="przycisk-powrot">Moje bilety</a>
                 <?php else: ?>
-                    <div style="width: 100%; height: 140px; background: #eee; line-height: 140px; color: #333; font-size: 12px;">Brak QR</div>
+                    <h1 style="color: #9e4747;">✕ Błąd transakcji</h1>
+                    <p><?= htmlspecialchars($komunikat_bledu) ?></p>
+                    <a href="javascript:history.back()" class="przycisk-powrot">Wróć</a>
                 <?php endif; ?>
-                <p style="margin: 10px 0 0 0; font-size: 12px; font-weight: bold; color: #000;">Okaż przy wejściu</p>
             </div>
         </div>
-    </div>
-    <?php endif; ?>
+    </main>
 
-    <div class="okno-platnosci">
-        <div id="ekran-blik">
-            <div class="logo-blik">BLIK</div>
-            <h2>Wprowadź kod</h2>
-            <input type="number" id="kod-blik" class="input-blik" placeholder="000000" maxlength="6">
-            <button id="btn-potwierdz-blik" class="btn-potwierdz">Potwierdź płatność</button>
-        </div>
-
-        <div id="ekran-ladowania">
-            <h2>Łączenie z operatorem...</h2>
-            <div class="spinner"></div>
-        </div>
-
-        <div id="ekran-sukcesu">
-            <?php if ($sukces_db): ?>
-                <h1 style="color: #829356;">✓ Płatność zaakceptowana!</h1>
-                <button class="btn-pdf" onclick="pobierzPDF()">Pobierz bilet (PDF)</button>
-                <br><a href="moje_bilety.php" class="przycisk-powrot">Moje bilety</a>
-            <?php else: ?>
-                <h1 style="color: #9e4747;">✕ Błąd transakcji</h1>
-                <p><?= htmlspecialchars($komunikat_bledu) ?></p>
-                <a href="javascript:history.back()" class="przycisk-powrot">Wróć</a>
-            <?php endif; ?>
-        </div>
-    </div>
+    <?php include 'footer.php'; ?>
 
     <script>
         function uruchomPrzetwarzanie() {
@@ -165,18 +202,18 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 
         function pobierzPDF() {
             const el = document.getElementById('szablon-bilet-pdf');
-            el.style.display = 'block'; // Pokazujemy na moment renderowania
+            el.style.display = 'block';
 
             const opcje = {
-                margin:       0.5, // 0.5 cala marginesu ze wszystkich stron
+                margin:       0.5,
                 filename:     'Bilet_Teatr_Jura.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: 800 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
             
             html2pdf().set(opcje).from(el).save().then(() => {
-                el.style.display = 'none'; // Ukrywamy z powrotem
+                el.style.display = 'none';
             });
         }
     </script>

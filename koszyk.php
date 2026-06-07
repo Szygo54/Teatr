@@ -52,7 +52,31 @@ try {
     <meta charset="UTF-8">
     <title>Koszyk - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px 20px; box-sizing: border-box; }
+        /* --- STYLE DLA STOPKI I UKŁADU STRONY --- */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        main {
+            flex: 1 0 auto; /* Wypycha stopkę w dół */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- RESZTA STYLÓW --- */
         .logo-img { width: 100%; max-width: 120px; margin-bottom: 30px; }
         .podsumowanie { background-color: #262626; padding: 40px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }
         h2 { font-weight: 300; letter-spacing: 2px; margin-top: 0; text-transform: uppercase; }
@@ -63,7 +87,6 @@ try {
         .przycisk-zaplac { background-color: #829356; color: #ffffff; padding: 16px 30px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
         .przycisk-zaplac:hover { background-color: #6a7944; }
 
-        /* --- NOWE STYLE DLA WYBORU PŁATNOŚCI --- */
         .sekcja-platnosci { margin: 30px 0; text-align: center; }
         .tytul-platnosci { font-size: 14px; font-weight: bold; color: #aaaaaa; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
         .metody-kontener { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -76,49 +99,53 @@ try {
 </head>
 <body>
 
-    <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
+    <main>
+        <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
 
-    <div class="podsumowanie">
-        <h2>Kasa Biletowa</h2>
-        <h3><?= htmlspecialchars($spektakl['tytul']) ?></h3>
-        
-        <p style="text-align: left; color: #aaaaaa;">Wybrane miejsca (<?= $ilosc_biletow ?>):</p>
-        <ul class="lista-miejsc">
-            <?php foreach ($miejsca_info as $m): ?>
-                <li><span>Rząd <?= htmlspecialchars($m['rzad']) ?></span> <strong>Miejsce <?= htmlspecialchars($m['numer']) ?></strong></li>
-            <?php endforeach; ?>
-        </ul>
-        
-        <div class="kwota-akcent">Do zapłaty: <?= number_format($laczna_kwota, 2) ?> PLN</div>
-
-        <form method="POST" action="platnosc.php">
-            <input type="hidden" name="termin_id" value="<?= $termin_id ?>">
-            <?php foreach ($wybrane_miejsca as $m_id): ?>
-                <input type="hidden" name="miejsca_do_zapisu[]" value="<?= htmlspecialchars($m_id) ?>">
-            <?php endforeach; ?>
+        <div class="podsumowanie">
+            <h2>Kasa Biletowa</h2>
+            <h3><?= htmlspecialchars($spektakl['tytul']) ?></h3>
             
-            <div class="sekcja-platnosci">
-                <p class="tytul-platnosci">Wybierz metodę płatności:</p>
-                <div class="metody-kontener">
-                    <label class="metoda-radio">
-                        <input type="radio" name="metoda" value="blik" required checked>
-                        <span class="znacznik">BLIK</span>
-                    </label>
-                    
-                    <label class="metoda-radio">
-                        <input type="radio" name="metoda" value="karta">
-                        <span class="znacznik">Karta Płatnicza</span>
-                    </label>
-                    
-                    <label class="metoda-radio">
-                        <input type="radio" name="metoda" value="przelew">
-                        <span class="znacznik">Szybki przelew</span>
-                    </label>
+            <p style="text-align: left; color: #aaaaaa;">Wybrane miejsca (<?= $ilosc_biletow ?>):</p>
+            <ul class="lista-miejsc">
+                <?php foreach ($miejsca_info as $m): ?>
+                    <li><span>Rząd <?= htmlspecialchars($m['rzad']) ?></span> <strong>Miejsce <?= htmlspecialchars($m['numer']) ?></strong></li>
+                <?php endforeach; ?>
+            </ul>
+            
+            <div class="kwota-akcent">Do zapłaty: <?= number_format($laczna_kwota, 2) ?> PLN</div>
+
+            <form method="POST" action="platnosc.php">
+                <input type="hidden" name="termin_id" value="<?= $termin_id ?>">
+                <?php foreach ($wybrane_miejsca as $m_id): ?>
+                    <input type="hidden" name="miejsca_do_zapisu[]" value="<?= htmlspecialchars($m_id) ?>">
+                <?php endforeach; ?>
+                
+                <div class="sekcja-platnosci">
+                    <p class="tytul-platnosci">Wybierz metodę płatności:</p>
+                    <div class="metody-kontener">
+                        <label class="metoda-radio">
+                            <input type="radio" name="metoda" value="blik" required checked>
+                            <span class="znacznik">BLIK</span>
+                        </label>
+                        
+                        <label class="metoda-radio">
+                            <input type="radio" name="metoda" value="karta">
+                            <span class="znacznik">Karta Płatnicza</span>
+                        </label>
+                        
+                        <label class="metoda-radio">
+                            <input type="radio" name="metoda" value="przelew">
+                            <span class="znacznik">Szybki przelew</span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            
-            <button type="submit" name="inicjuj_platnosc" class="przycisk-zaplac">Przejdź do płatności</button>
-        </form>
-    </div>
+                
+                <button type="submit" name="inicjuj_platnosc" class="przycisk-zaplac">Przejdź do płatności</button>
+            </form>
+        </div>
+    </main>
+
+    <?php include 'footer.php'; ?>
 </body>
 </html>

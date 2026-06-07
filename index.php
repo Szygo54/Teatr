@@ -41,7 +41,28 @@ function polskiMiesiac($numerMiesiaca) {
     <meta charset="UTF-8">
     <title>Teatr Jura - Strona Główna</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        html, body { 
+    height: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background-color: #1a1a1a; 
+    color: #e0e0e0; 
+    
+    /* Właściwości Flexboxa potrzebne dla stopki: */
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+}
+
+/* Nowy znacznik main, który rozpycha stronę */
+main {
+    flex: 1 0 auto; 
+    padding-bottom: 50px; /* Zastępuje Twoje wcześniejsze padding-bottom: 80px z body */
+}
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
@@ -186,94 +207,96 @@ function polskiMiesiac($numerMiesiaca) {
 </head>
 
 <body>
+    <main>
 
-    <div class="top-bar">
-        <div><?php if (isset($_SESSION['user_id'])): ?> Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong><?php endif; ?></div>
-        <div>
-            <a href="kalendarium.php">Kalendarium</a>
-            <a href="spektakle.php">Repertuar</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a> 
-                
-                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?>
-                <a href="logowanie.php">Zaloguj</a>
+        <div class="top-bar">
+            <div><?php if (isset($_SESSION['user_id'])): ?> Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong><?php endif; ?></div>
+            <div>
+                <a href="kalendarium.php">Kalendarium</a>
+                <a href="spektakle.php">Repertuar</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a> 
+                    
+                    <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                    <a href="wyloguj.php">Wyloguj</a>
+                <?php else: ?>
+                    <a href="logowanie.php">Zaloguj</a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="header-sekcja">
+            <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-teatru">
+            <h1 style="color: white; font-size: 48px; margin: 0; text-transform: uppercase; letter-spacing: 5px;">Teatr Jura</h1>
+            <div class="podtytul">Aktualny repertuar i rezerwacja biletów online</div>
+        </div>
+
+        <div class="kontener-sekcji">
+            <?php if ($polecany): ?>
+                <a href="spektakl.php?id=<?= $polecany['id'] ?>" class="hero-karta">
+                    <div class="hero-plakat"><img src="<?= htmlspecialchars($polecany['plakat']) ?>" alt="Plakat"></div>
+                    <div class="hero-tresc">
+                        <h2 class="hero-tytul"><?= htmlspecialchars($polecany['tytul']) ?></h2>
+                        <div class="hero-info"><?= date('d.m.Y', strtotime($polecany['data_wystawienia'])) ?></div>
+                    </div>
+                </a>
             <?php endif; ?>
         </div>
-    </div>
 
-    <div class="header-sekcja">
-        <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-teatru">
-        <h1 style="color: white; font-size: 48px; margin: 0; text-transform: uppercase; letter-spacing: 5px;">Teatr Jura</h1>
-        <div class="podtytul">Aktualny repertuar i rezerwacja biletów online</div>
-    </div>
-
-    <div class="kontener-sekcji">
-        <?php if ($polecany): ?>
-            <a href="spektakl.php?id=<?= $polecany['id'] ?>" class="hero-karta">
-                <div class="hero-plakat"><img src="<?= htmlspecialchars($polecany['plakat']) ?>" alt="Plakat"></div>
-                <div class="hero-tresc">
-                    <h2 class="hero-tytul"><?= htmlspecialchars($polecany['tytul']) ?></h2>
-                    <div class="hero-info"><?= date('d.m.Y', strtotime($polecany['data_wystawienia'])) ?></div>
-                </div>
-            </a>
-        <?php endif; ?>
-    </div>
-
-    <div class="kontener-sekcji">
-        <h2 class="naglowek-sekcji"><a href="kalendarium.php">Kalendarium</a></h2>
-        
-        <div class="lista-spektakli">
-            <?php foreach ($harmonogram as $s): 
-                $ts = strtotime($s['data_wystawienia']);
-            ?>
-                <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
-                    <div class="w-data">
-                        <div class="w-dzien"><?= date('d', $ts) ?></div>
-                        <div class="w-miesiac"><?= polskiMiesiac(date('n', $ts)) ?></div>
-                    </div>
-                    <div class="w-info">
-                        <div class="w-czas">GODZ. <?= date('H:i', $ts) ?></div>
-                        <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
-                    </div>
-                    <div class="w-akcja">
-                        <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
-                    </div>
-                </a>
-            <?php endforeach; ?>
+        <div class="kontener-sekcji">
+            <h2 class="naglowek-sekcji"><a href="kalendarium.php">Kalendarium</a></h2>
+            
+            <div class="lista-spektakli">
+                <?php foreach ($harmonogram as $s): 
+                    $ts = strtotime($s['data_wystawienia']);
+                ?>
+                    <a href="spektakl.php?id=<?= $s['spektakl_id'] ?>" class="wiersz-spektaklu">
+                        <div class="w-data">
+                            <div class="w-dzien"><?= date('d', $ts) ?></div>
+                            <div class="w-miesiac"><?= polskiMiesiac(date('n', $ts)) ?></div>
+                        </div>
+                        <div class="w-info">
+                            <div class="w-czas">GODZ. <?= date('H:i', $ts) ?></div>
+                            <h3 class="w-tytul-tekst"><?= htmlspecialchars($s['tytul']) ?></h3>
+                        </div>
+                        <div class="w-akcja">
+                            <object><a href="wybor_miejsca.php?termin_id=<?= $s['termin_id'] ?>" class="btn-kup">Bilety</a></object>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
 
-    <div class="kontener-sekcji">
-        <h2 class="naglowek-sekcji"><a href="spektakle.php">Wszystkie Sztuki</a></h2>
-        <div class="siatka-plakatow">
-            <?php foreach ($sztuki as $sztuka): ?>
-                <a href="spektakl.php?id=<?= $sztuka['id'] ?>" class="karta-sztuki">
-                    <div class="mini-plakat"><img src="<?= htmlspecialchars($sztuka['plakat']) ?>" alt="Plakat"></div>
-                    <div class="mini-tresc"><h3 class="mini-tytul"><?= htmlspecialchars($sztuka['tytul']) ?></h3></div>
-                </a>
-            <?php endforeach; ?>
+        <div class="kontener-sekcji">
+            <h2 class="naglowek-sekcji"><a href="spektakle.php">Wszystkie Sztuki</a></h2>
+            <div class="siatka-plakatow">
+                <?php foreach ($sztuki as $sztuka): ?>
+                    <a href="spektakl.php?id=<?= $sztuka['id'] ?>" class="karta-sztuki">
+                        <div class="mini-plakat"><img src="<?= htmlspecialchars($sztuka['plakat']) ?>" alt="Plakat"></div>
+                        <div class="mini-tresc"><h3 class="mini-tytul"><?= htmlspecialchars($sztuka['tytul']) ?></h3></div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
 
-    <div class="kontener-sekcji">
-        <h2 class="naglowek-sekcji"><a href="aktorzy.php">Poznaj Nasz Zespół</a></h2>
-        
-        <div class="siatka-aktorow-index">
-            <?php foreach ($aktorzy as $aktor): ?>
-                <div class="karta-aktora-index">
-                    <div class="zdjecie-aktora-index">
-                        <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>">
+        <div class="kontener-sekcji">
+            <h2 class="naglowek-sekcji"><a href="aktorzy.php">Poznaj Nasz Zespół</a></h2>
+            
+            <div class="siatka-aktorow-index">
+                <?php foreach ($aktorzy as $aktor): ?>
+                    <div class="karta-aktora-index">
+                        <div class="zdjecie-aktora-index">
+                            <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>">
+                        </div>
+                        <div class="dane-aktora-index">
+                            <h3 class="imie-aktora-index"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
+                            <p class="rola-aktora-index"><?= htmlspecialchars($aktor['specjalizacja']) ?></p>
+                        </div>
                     </div>
-                    <div class="dane-aktora-index">
-                        <h3 class="imie-aktora-index"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
-                        <p class="rola-aktora-index"><?= htmlspecialchars($aktor['specjalizacja']) ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-
+    </main>
+    <?php include 'footer.php'; ?>
 </body>
 </html>
