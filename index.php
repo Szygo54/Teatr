@@ -21,7 +21,7 @@ try {
     $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
     $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. NOWE: Pobieranie 4 losowych aktorów z bazy danych
+    // 4. Pobieranie 4 losowych aktorów z bazy danych
     $stmtAktorzy = $pdo->query("SELECT imie_nazwisko, zdjecie, specjalizacja FROM Aktorzy ORDER BY RAND() LIMIT 4");
     $aktorzy = $stmtAktorzy->fetchAll(PDO::FETCH_ASSOC);
 
@@ -86,7 +86,7 @@ function polskiMiesiac($numerMiesiaca) {
         
         .w-info { display: flex; flex-direction: column; gap: 5px; }
         .w-czas { font-size: 13px; color: #666; letter-spacing: 1px; }
-        .w-tytul-tekst { font-size: 22px; color: #aaa; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        .w-tytul-tekst { font-size: 22px; color: #cecdcd; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
         
         .w-akcja { text-align: right; }
         .btn-kup { 
@@ -122,14 +122,66 @@ function polskiMiesiac($numerMiesiaca) {
         .mini-tresc { padding: 20px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 20px; text-transform: uppercase; }
 
-        /* AKTORZY */
-        .siatka-aktorow-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
-        .karta-aktora-index { background: #262626; border-radius: 8px; overflow: hidden; text-align: center; }
-        .zdjecie-aktora-index { height: 300px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; border-bottom: 3px solid #829356; }
-        .zdjecie-aktora-index img { width: 100%; height: 100%; object-fit: cover; }
-        .dane-aktora-index { padding: 15px; }
-        .imie-aktora-index { color: #fff; font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; }
-        .rola-aktora-index { color: #829356; font-size: 13px; margin: 0; }
+        /* EDYTORIALOWY STYL AKTORÓW (zaktualizowany) */
+        .siatka-aktorow-index { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 40px; 
+        }
+        
+        .karta-aktora-index { 
+            text-align: left; 
+            cursor: pointer;
+        }
+
+        .zdjecie-aktora-index { 
+            height: 380px; 
+            background: #111; 
+            overflow: hidden; 
+            margin-bottom: 15px; 
+            position: relative;
+            border-radius: 12px;
+        }
+        
+        .zdjecie-aktora-index img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            filter: grayscale(100%); 
+            transition: transform 0.6s ease, filter 0.6s ease; 
+        }
+
+        .karta-aktora-index:hover .zdjecie-aktora-index img { 
+            transform: scale(1.05); 
+            filter: grayscale(0%); 
+        }
+
+        .dane-aktora-index { 
+            padding: 0 5px; 
+        }
+        
+        .imie-aktora-index { 
+            color: #e0e0e0; 
+            font-size: 18px; 
+            font-weight: 300; 
+            margin: 0 0 5px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        
+        .rola-aktora-index { 
+            color: #829356; 
+            font-size: 11px; 
+            margin: 0; 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+        }
+
+        .karta-aktora-index:hover .imie-aktora-index {
+            color: #fff; 
+        }
     </style>
 </head>
 
