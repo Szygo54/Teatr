@@ -78,7 +78,7 @@ function polskiMiesiacPelny($numerMiesiaca) {
         
         .w-info { display: flex; flex-direction: column; gap: 5px; }
         .w-czas { font-size: 13px; color: #666; letter-spacing: 1px; }
-        .w-tytul-tekst { font-size: 22px; color: #aaa; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        .w-tytul-tekst { font-size: 22px; color: #cecdcd; font-weight: 300; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
         
         .w-akcja { text-align: right; }
         .btn-kup { 
@@ -120,6 +120,7 @@ function polskiMiesiacPelny($numerMiesiaca) {
             <a href="index.php">Strona Główna</a>
             <a href="spektakle.php">Repertuar</a>
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
                 <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
                 <a href="wyloguj.php">Wyloguj</a>
             <?php else: ?>

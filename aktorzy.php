@@ -55,6 +55,7 @@ try {
             <a href="index.php">Strona Główna</a>
             <a href="spektakle.php">Repertuar</a>
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
                 <?php if ($_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
                 <a href="wyloguj.php">Wyloguj</a>
             <?php else: ?>

@@ -49,9 +49,12 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
+        .top-bar .link-akcent { color: #829356; }
+        .top-bar .link-admin { color: #9e4747; } 
         
         /* Ujednolicony układ ze spektakli */
         .kontener-sekcji { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
@@ -75,10 +78,21 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 <body>
 
     <div class="top-bar">
-        <div>Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($imie_uzytkownika) ?></strong></div>
         <div>
-            <a href="index.php" style="color: #fff;">Strona Główna</a> 
-            <a href="wyloguj.php">Wyloguj</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+            <?php endif; ?>
+        </div>
+        <div>
+            <a href="index.php">Strona Główna</a>
+            <a href="spektakle.php">Repertuar</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                <a href="wyloguj.php">Wyloguj</a>
+            <?php else: ?>
+                <a href="logowanie.php">Zaloguj się</a>
+            <?php endif; ?>
         </div>
     </div>
 
