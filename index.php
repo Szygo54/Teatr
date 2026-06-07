@@ -191,7 +191,7 @@ function polskiMiesiac($numerMiesiaca) {
         <div><?php if (isset($_SESSION['user_id'])): ?> Witaj, <strong><?= htmlspecialchars($_SESSION['user_imie']) ?></strong><?php endif; ?></div>
         <div>
             <a href="kalendarium.php">Kalendarium</a>
-            <a href="spektakle.php">Wszystkie Sztuki</a>
+            <a href="spektakle.php">Repertuar</a>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="moje_bilety.php" class="link-akcent">Moje bilety</a> 
                 
