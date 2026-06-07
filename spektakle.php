@@ -3,7 +3,6 @@ session_start();
 require_once 'database.php';
 
 try {
-    // NAPRAWIONE ZAPYTANIE: Dodano 'plakat' do listy pobieranych pól
     $stmt = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle GROUP BY tytul");
     $sztuki = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (\PDOException $e) {
@@ -17,7 +16,10 @@ try {
     <meta charset="UTF-8">
     <title>Wszystkie Sztuki - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        /* STYLE DLA STOPKI */
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1 0 auto; padding-bottom: 50px; }
         
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
@@ -33,7 +35,6 @@ try {
         .karta-sztuki { background: #262626; border-radius: 8px; overflow: hidden; text-decoration: none; transition: transform 0.3s; display: flex; flex-direction: column; }
         .karta-sztuki:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         
-        /* NAPRAWIONE: Wyświetlanie obrazka */
         .mini-plakat { height: 600px; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .mini-plakat img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -43,43 +44,45 @@ try {
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-            <?php endif; ?>
+    <main>
+        <div class="top-bar">
+            <div>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+                <?php endif; ?>
+            </div>
+            <div>
+                <a href="index.php">Strona Główna</a>
+                <a href="spektakle.php">Repertuar</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+                    <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                    <a href="wyloguj.php">Wyloguj</a>
+                <?php else: ?>
+                    <a href="logowanie.php">Zaloguj się</a>
+                <?php endif; ?>
+            </div>
         </div>
-        <div>
-            <a href="index.php">Strona Główna</a>
-            <a href="spektakle.php">Repertuar</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
-                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?>
-                <a href="logowanie.php">Zaloguj się</a>
-            <?php endif; ?>
-        </div>
-    </div>
 
-    <div class="kontener-sekcji">
-        <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
-        <h2 class="naglowek-sekcji">Spektakle</h2>
+        <div class="kontener-sekcji">
+            <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
+            <h2 class="naglowek-sekcji">Spektakle</h2>
         
-        <div class="siatka-plakatow">
-            <?php foreach ($sztuki as $sztuka): ?>
-                <a href="spektakl.php?id=<?= $sztuka['id'] ?>" class="karta-sztuki">
-                    <div class="mini-plakat">
-                        <img src="<?= htmlspecialchars($sztuka['plakat']) ?>" alt="<?= htmlspecialchars($sztuka['tytul']) ?>">
-                    </div>
-                    <div class="mini-tresc">
-                        <h3 class="mini-tytul"><?= htmlspecialchars($sztuka['tytul']) ?></h3>
-                    </div>
-                </a>
-            <?php endforeach; ?>
+            <div class="siatka-plakatow">
+                <?php foreach ($sztuki as $sztuka): ?>
+                    <a href="spektakl.php?id=<?= $sztuka['id'] ?>" class="karta-sztuki">
+                        <div class="mini-plakat">
+                            <img src="<?= htmlspecialchars($sztuka['plakat']) ?>" alt="<?= htmlspecialchars($sztuka['tytul']) ?>">
+                        </div>
+                        <div class="mini-tresc">
+                            <h3 class="mini-tytul"><?= htmlspecialchars($sztuka['tytul']) ?></h3>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-
+    </main>
+    
+    <?php include 'footer.php'; ?>
 </body>
 </html>

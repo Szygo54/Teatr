@@ -46,7 +46,27 @@ try {
     <meta charset="UTF-8">
     <title>Wybierz miejsca - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 40px 20px; }
+        /* KLUCZOWE STYLE DLA STOPKI */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1 0 auto; /* Pozwala kontenerowi rosnąć i zepchnąć stopkę w dół */
+            padding: 40px 20px;
+        }
+        /* KONIEC STYLÓW DLA STOPKI */
+
         h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
         .spektakl-info { color: #aaaaaa; margin-bottom: 40px; font-size: 15px; }
         .cena-akcent { color: #829356; font-weight: bold; }
@@ -63,34 +83,37 @@ try {
 </head>
 <body>
 
-    <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
-    <h2><?= htmlspecialchars($spektakl['tytul']) ?></h2>
-    <p class="spektakl-info">
-        Data: <?= date('d.m.Y H:i', strtotime($spektakl['data_wystawienia'])) ?> | 
-        Bilet: <span class="cena-akcent"><?= htmlspecialchars($spektakl['cena']) ?> PLN</span>
-    </p>
+    <main>
+        <img src="zdjecia/logo.png" alt="Logo Teatr Jura" class="logo-img">
+        <h2><?= htmlspecialchars($spektakl['tytul']) ?></h2>
+        <p class="spektakl-info">
+            Data: <?= date('d.m.Y H:i', strtotime($spektakl['data_wystawienia'])) ?> | 
+            Bilet: <span class="cena-akcent"><?= htmlspecialchars($spektakl['cena']) ?> PLN</span>
+        </p>
 
-    <div class="scena">SCENA</div>
+        <div class="scena">SCENA</div>
 
-    <form action="koszyk.php" method="POST" id="formularz-rezerwacji">
-        <input type="hidden" name="termin_id" value="<?= $termin_id ?>">
-        
-        <div class="sala">
-            <?php foreach ($wszystkie_miejsca as $m): ?>
-                <?php $czy_zajete = in_array($m['id'], $zajete_id); ?>
-                <div>
-                    <?php if ($czy_zajete): ?>
-                        <div class="fotel-label fotel-zajety">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></div>
-                    <?php else: ?>
-                        <input type="checkbox" name="wybrane_miejsca[]" value="<?= $m['id'] ?>" id="miejsce_<?= $m['id'] ?>" class="fotel-checkbox">
-                        <label for="miejsce_<?= $m['id'] ?>" class="fotel-label">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></label>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
+        <form action="koszyk.php" method="POST" id="formularz-rezerwacji">
+            <input type="hidden" name="termin_id" value="<?= $termin_id ?>">
+            
+            <div class="sala">
+                <?php foreach ($wszystkie_miejsca as $m): ?>
+                    <?php $czy_zajete = in_array($m['id'], $zajete_id); ?>
+                    <div>
+                        <?php if ($czy_zajete): ?>
+                            <div class="fotel-label fotel-zajety">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></div>
+                        <?php else: ?>
+                            <input type="checkbox" name="wybrane_miejsca[]" value="<?= $m['id'] ?>" id="miejsce_<?= $m['id'] ?>" class="fotel-checkbox">
+                            <label for="miejsce_<?= $m['id'] ?>" class="fotel-label">R<?= $m['rzad'] ?><br>M<?= $m['numer'] ?></label>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
-        <button type="submit" class="przycisk-koszyk">Przejdź do podsumowania</button>
-    </form>
+            <button type="submit" class="przycisk-koszyk">Przejdź do podsumowania</button>
+        </form>
+    </main>
 
+    <?php include 'footer.php'; ?>
 </body>
 </html>

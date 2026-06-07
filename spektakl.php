@@ -51,7 +51,25 @@ try {
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($spektakl['tytul']) ?> - Teatr Jura</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; padding-bottom: 80px; }
+        /* KLUCZOWE STYLE DLA STOPKI */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1 0 auto; /* Pozwala kontenerowi rosnąć i zepchnąć stopkę w dół */
+            padding-bottom: 50px;
+        }
+        /* KONIEC STYLÓW DLA STOPKI */
         
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
@@ -80,7 +98,6 @@ try {
         .btn-wielki { display: block; background: #829356; color: white; text-align: center; padding: 20px; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase; border-radius: 5px; transition: 0.3s; }
         .btn-wielki:hover { background: #6a7944; }
 
-        /* NOWE: Style dla sekcji Terminów */
         .terminy-sekcja { margin-top: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .terminy-naglowek { color: #829356; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; }
         .terminy-siatka { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -92,7 +109,6 @@ try {
         .termin-btn { background: #829356; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
         .termin-btn:hover { background: #6a7944; }
 
-        /* Style dla sekcji Obsady */
         .obsada-sekcja { margin-top: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .obsada-naglowek { color: #829356; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; }
         .aktorzy-siatka { display: flex; flex-wrap: wrap; gap: 40px; justify-content: flex-start; }
@@ -113,92 +129,95 @@ try {
     </style>
 </head>
 <body>
+    <main>
 
-    <div class="top-bar">
-        <div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-            <?php endif; ?>
-        </div>
-        <div>
-            <a href="index.php">Strona Główna</a>
-            <a href="spektakle.php">Repertuar</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
-                <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                <a href="wyloguj.php">Wyloguj</a>
-            <?php else: ?>
-                <a href="logowanie.php">Zaloguj się</a>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <div class="kontener-sekcji">
-        <a href="javascript:history.back()" class="powrot">&larr; Wróć</a>
-        
-        <div class="spektakl-layout">
-            <div class="kolumna-lewa">
-                <div class="plakat-duzy"><img src="<?= htmlspecialchars($spektakl['plakat']) ?>" alt="Plakat"></div>
+        <div class="top-bar">
+            <div>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+                <?php endif; ?>
             </div>
-            
-            <div class="kolumna-prawa">
-                <h1 class="tytul-spektaklu"><?= htmlspecialchars($spektakl['tytul']) ?></h1>
-                
-                <div class="opis-spektaklu">
-                    <?= nl2br(htmlspecialchars($spektakl['opis'])) ?>
-                </div>
-                
-                <div class="detale">
-                    <?php if ($spektakl['najblizszy_termin']): ?>
-                        <p><strong>Najbliższe wystawienie:</strong><br> 
-                        <?= date('d.m.Y', strtotime($spektakl['najblizszy_termin'])) ?> r. o godz. <?= date('H:i', strtotime($spektakl['najblizszy_termin'])) ?></p>
-                    <?php else: ?>
-                        <p><strong>Najbliższe wystawienie:</strong><br> Brak zaplanowanych terminów.</p>
-                    <?php endif; ?>
-                    <p><strong>Cena biletu:</strong> <span class="cena-tag"><?= number_format($spektakl['cena'], 2) ?> PLN</span></p>
-                </div>
-                
-                <?php if ($spektakl['termin_id']): ?>
-                    <a href="wybor_miejsca.php?termin_id=<?= $spektakl['termin_id'] ?>" class="btn-wielki">Kup bilet na ten spektakl</a>
+            <div>
+                <a href="index.php">Strona Główna</a>
+                <a href="spektakle.php">Repertuar</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+                    <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+                    <a href="wyloguj.php">Wyloguj</a>
                 <?php else: ?>
-                    <button class="btn-wielki" style="background:#555;" disabled>Brak biletów</button>
+                    <a href="logowanie.php">Zaloguj się</a>
                 <?php endif; ?>
             </div>
         </div>
 
-        <?php if (!empty($wszystkie_terminy)): ?>
-            <div class="terminy-sekcja">
-                <h2 class="terminy-naglowek">Wszystkie terminy</h2>
-                <div class="terminy-siatka">
-                    <?php foreach ($wszystkie_terminy as $termin): ?>
-                        <div class="termin-karta">
-                            <div class="termin-info">
-                                <p class="termin-data"><?= date('d.m.Y', strtotime($termin['data_wystawienia'])) ?></p>
-                                <p class="termin-godzina">Godz. <?= date('H:i', strtotime($termin['data_wystawienia'])) ?></p>
-                            </div>
-                            <a href="wybor_miejsca.php?termin_id=<?= $termin['id'] ?>" class="termin-btn">Kup Bilet</a>
-                        </div>
-                    <?php endforeach; ?>
+        <div class="kontener-sekcji">
+            <a href="javascript:history.back()" class="powrot">&larr; Wróć</a>
+            
+            <div class="spektakl-layout">
+                <div class="kolumna-lewa">
+                    <div class="plakat-duzy"><img src="<?= htmlspecialchars($spektakl['plakat']) ?>" alt="Plakat"></div>
+                </div>
+                
+                <div class="kolumna-prawa">
+                    <h1 class="tytul-spektaklu"><?= htmlspecialchars($spektakl['tytul']) ?></h1>
+                    
+                    <div class="opis-spektaklu">
+                        <?= nl2br(htmlspecialchars($spektakl['opis'])) ?>
+                    </div>
+                    
+                    <div class="detale">
+                        <?php if ($spektakl['najblizszy_termin']): ?>
+                            <p><strong>Najbliższe wystawienie:</strong><br> 
+                            <?= date('d.m.Y', strtotime($spektakl['najblizszy_termin'])) ?> r. o godz. <?= date('H:i', strtotime($spektakl['najblizszy_termin'])) ?></p>
+                        <?php else: ?>
+                            <p><strong>Najbliższe wystawienie:</strong><br> Brak zaplanowanych terminów.</p>
+                        <?php endif; ?>
+                        <p><strong>Cena biletu:</strong> <span class="cena-tag"><?= number_format($spektakl['cena'], 2) ?> PLN</span></p>
+                    </div>
+                    
+                    <?php if ($spektakl['termin_id']): ?>
+                        <a href="wybor_miejsca.php?termin_id=<?= $spektakl['termin_id'] ?>" class="btn-wielki">Kup bilet na ten spektakl</a>
+                    <?php else: ?>
+                        <button class="btn-wielki" style="background:#555;" disabled>Brak biletów</button>
+                    <?php endif; ?>
                 </div>
             </div>
-        <?php endif; ?>
 
-        <?php if (!empty($obsada)): ?>
-            <div class="obsada-sekcja">
-                <h2 class="obsada-naglowek">Obsada spektaklu</h2>
-                <div class="aktorzy-siatka">
-                    <?php foreach ($obsada as $aktor): ?>
-                        <div class="aktor-karta">
-                            <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>" class="aktor-zdjecie">
-                            <h3 class="aktor-imie"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
-                            <div class="aktor-specjalizacja"><?= htmlspecialchars($aktor['specjalizacja']) ?></div>
-                        </div>
-                    <?php endforeach; ?>
+            <?php if (!empty($wszystkie_terminy)): ?>
+                <div class="terminy-sekcja">
+                    <h2 class="terminy-naglowek">Wszystkie terminy</h2>
+                    <div class="terminy-siatka">
+                        <?php foreach ($wszystkie_terminy as $termin): ?>
+                            <div class="termin-karta">
+                                <div class="termin-info">
+                                    <p class="termin-data"><?= date('d.m.Y', strtotime($termin['data_wystawienia'])) ?></p>
+                                    <p class="termin-godzina">Godz. <?= date('H:i', strtotime($termin['data_wystawienia'])) ?></p>
+                                </div>
+                                <a href="wybor_miejsca.php?termin_id=<?= $termin['id'] ?>" class="termin-btn">Kup Bilet</a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </div>
-        <?php endif; ?>
-        
-    </div>
+            <?php endif; ?>
+
+            <?php if (!empty($obsada)): ?>
+                <div class="obsada-sekcja">
+                    <h2 class="obsada-naglowek">Obsada spektaklu</h2>
+                    <div class="aktorzy-siatka">
+                        <?php foreach ($obsada as $aktor): ?>
+                            <div class="aktor-karta">
+                                <img src="<?= htmlspecialchars($aktor['zdjecie']) ?>" alt="<?= htmlspecialchars($aktor['imie_nazwisko']) ?>" class="aktor-zdjecie">
+                                <h3 class="aktor-imie"><?= htmlspecialchars($aktor['imie_nazwisko']) ?></h3>
+                                <div class="aktor-specjalizacja"><?= htmlspecialchars($aktor['specjalizacja']) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+        </div>
+    </main>
+    <?php include 'footer.php'; ?>
 
 </body>
 </html>
