@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Cze 06, 2026 at 11:51 PM
+-- Generation Time: Cze 07, 2026 at 10:07 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -171,11 +171,60 @@ INSERT INTO `miejsca` (`id`, `rzad`, `numer`) VALUES
 --
 
 CREATE TABLE `obsada` (
-  `id` int(11) NOT NULL,
   `spektakl_id` int(11) NOT NULL,
-  `aktor_id` int(11) NOT NULL,
-  `grana_postac` varchar(255) DEFAULT NULL
+  `aktor_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `obsada`
+--
+
+INSERT INTO `obsada` (`spektakl_id`, `aktor_id`) VALUES
+(1, 1),
+(1, 3),
+(1, 5),
+(1, 7),
+(1, 9),
+(2, 2),
+(2, 4),
+(2, 6),
+(2, 8),
+(2, 10),
+(3, 1),
+(3, 2),
+(3, 3),
+(3, 4),
+(3, 5),
+(4, 6),
+(4, 7),
+(4, 8),
+(4, 9),
+(4, 10),
+(5, 1),
+(5, 4),
+(5, 5),
+(5, 8),
+(5, 9),
+(6, 2),
+(6, 3),
+(6, 6),
+(6, 7),
+(6, 10),
+(8, 1),
+(8, 5),
+(8, 6),
+(8, 9),
+(8, 10),
+(9, 2),
+(9, 3),
+(9, 4),
+(9, 7),
+(9, 8),
+(12, 1),
+(12, 2),
+(12, 8),
+(12, 9),
+(12, 10);
 
 -- --------------------------------------------------------
 
@@ -196,41 +245,10 @@ CREATE TABLE `rezerwacje` (
 --
 
 INSERT INTO `rezerwacje` (`id`, `uzytkownik_id`, `termin_id`, `miejsce_id`, `data_zakupu`) VALUES
-(7, 5, 124, 15, '2026-06-06 23:04:00'),
-(8, 5, 124, 16, '2026-06-06 23:04:00'),
-(9, 5, 124, 17, '2026-06-06 23:04:00'),
-(10, 5, 124, 19, '2026-06-06 23:04:00'),
-(11, 5, 124, 20, '2026-06-06 23:04:00'),
-(12, 5, 124, 21, '2026-06-06 23:04:00'),
-(13, 5, 124, 27, '2026-06-06 23:04:00'),
-(14, 5, 124, 31, '2026-06-06 23:04:00'),
-(15, 5, 124, 33, '2026-06-06 23:04:00'),
-(16, 5, 124, 39, '2026-06-06 23:04:00'),
-(17, 5, 124, 40, '2026-06-06 23:04:00'),
-(18, 5, 124, 41, '2026-06-06 23:04:00'),
-(19, 5, 124, 43, '2026-06-06 23:04:00'),
-(20, 5, 124, 44, '2026-06-06 23:04:00'),
-(21, 5, 124, 45, '2026-06-06 23:04:00'),
-(22, 5, 124, 51, '2026-06-06 23:04:00'),
-(23, 5, 124, 53, '2026-06-06 23:04:00'),
-(24, 5, 124, 57, '2026-06-06 23:04:00'),
-(25, 5, 124, 63, '2026-06-06 23:04:00'),
-(26, 5, 124, 64, '2026-06-06 23:04:00'),
-(27, 5, 124, 65, '2026-06-06 23:04:00'),
-(28, 5, 124, 67, '2026-06-06 23:04:00'),
-(29, 5, 124, 68, '2026-06-06 23:04:00'),
-(30, 5, 124, 69, '2026-06-06 23:04:00'),
-(31, 5, 108, 30, '2026-06-06 23:06:36'),
-(32, 5, 108, 54, '2026-06-06 23:06:36'),
-(35, 5, 116, 5, '2026-06-06 23:09:14'),
-(36, 5, 108, 9, '2026-06-06 23:13:58'),
-(37, 5, 112, 9, '2026-06-06 23:16:16'),
-(38, 5, 108, 82, '2026-06-06 23:18:39'),
-(39, 5, 112, 82, '2026-06-06 23:20:53'),
-(40, 5, 108, 56, '2026-06-06 23:23:22'),
-(43, 5, 108, 65, '2026-06-06 23:23:34'),
-(44, 5, 109, 70, '2026-06-06 23:23:52'),
-(45, 5, 109, 71, '2026-06-06 23:23:52');
+(7, 4, 112, 56, '2026-06-07 00:13:53'),
+(8, 4, 112, 57, '2026-06-07 00:13:53'),
+(9, 3, 108, 41, '2026-06-07 00:56:49'),
+(10, 3, 108, 42, '2026-06-07 00:56:49');
 
 -- --------------------------------------------------------
 
@@ -258,7 +276,7 @@ INSERT INTO `spektakle` (`id`, `tytul`, `opis`, `cena`, `plakat`) VALUES
 (5, 'O kotach', 'Mają w sobie coś, czego nam brakuje: absolutny spokój i pogardę dla konwenansów. Bukowski o kotach pisał tak, jak żył - bez upiększania, za to z ogromnym szacunkiem do tych wolnych stworzeń. \'O kotach\' to teatralny wieczór z dymem papierosa w tle, pełen cynicznego humoru i gorzkiej refleksji nad tym, co w życiu naprawdę istotne. Poznaj świat widziany oczami kota i zgorzkniałego geniusza.', 45.00, 'zdjecia/kot.jpg'),
 (6, 'Makbet', 'Jeden czyn, który zmienia wszystko. W mrocznych zakamarkach Szkocji ambicja bierze górę nad lojalnością, a przeznaczenie splata się z szaleństwem. Czy Makbet zdoła udźwignąć ciężar korony zdobytej krwią? Zanurz się w studium upadku człowieka, dla którego każda kolejna decyzja prowadzi prosto w otchłań.', 90.00, 'zdjecia/makbet.jpg'),
 (7, 'Mistrz i Małgorzata', 'W Moskwie lat 30. pojawia się tajemniczy nieznajomy, który wywraca porządek miasta do góry nogami. Diabeł w przebraniu profesora, czarny kot chodzący na dwóch łapach i miłość, która jest w stanie pokonać nawet śmierć. \"Mistrz i Małgorzata\" to widowisko, w którym rzeczywistość miesza się z magią, a granica między dobrem a złem zaciera się bezpowrotnie. Czy jesteś gotowy na spotkanie z Wolandem?', 95.00, 'zdjecia/mistrz.jpg'),
-(8, 'Pijacy', 'Wino, karty i kłótnie o nic. Witamy w domu, gdzie szklanka nigdy nie stoi pusta, a każda rozmowa kończy się awanturą. \"Pijacy\" to błyskotliwa satyra na obyczaje, która nawet po 250 latach nic nie straciła na aktualności. Zobacz, jak bohaterowie Bohomolca zamieniają racjonalne dyskusje w absurdalny spektakl pomyłek i upadków. Spektakl, który bawi do łez, ale zostawia widza z ważnym pytaniem: czy naprawdę warto?', 70.00, 'zdjecia/pijacy.jpg'),
+(8, 'Pijacy', 'Wino, karty i kłótnie o nic. Witamy w domu, gdzie szklanka nigdy nie stoi pusta, a każda rozmowa kończy się awanturą. \"Pijacy\" to błyskotliwa satyra na obyczaje, która nawet po 250 latach nic nie straciła na aktualności. Zobacz, jak bohaterowie Bohomolca zamieniają racjonalne dyskusje w absurdalny spektakl pomyłek i upadków. Spektakl, który bawi do łez, ale zostawia widza z ważnym pytaniem: czy naprawdę warto?', 70.00, 'zdjecia/pijacy.png'),
 (9, 'Romeo i Julia', 'Dwa rody, jedna nienawiść i miłość, która nie miała prawa się zdarzyć. Historia Romea i Julii to opowieść o buncie młodości przeciwko skostniałym zasadom świata dorosłych. Czy szczere uczucie jest w stanie zatrzymać spiralę przemocy? Spektakl o namiętności tak silnej, że gotowa jest przekroczyć granice życia i śmierci.', 85.00, 'zdjecia/romeo.png'),
 (10, 'Wariat i zakonnica', 'Co się stanie, gdy chłodna dyscyplina religijna zderzy się z nieokiełznanym ogniem szaleństwa? \"Wariat i zakonnica\" to wybuchowa mieszanka lęku, pasji i psychoanalizy w krzywym zwierciadle. Walpurg - artysta uwięziony w ciele chorego – kontra siostra Barbara, która zamiast leczyć, zaczyna gubić się w świecie własnych emocji. Zapraszamy do spektaklu, w którym granica między zdrowiem a obłędem jest tak cienka, że niemal niewidoczna.', 85.00, 'zdjecia/wariat.jpg'),
 (11, 'Wesele', 'Inteligencja kontra wieś. Mity kontra codzienność. Duchy kontra ludzie. \"Wesele\" to najbardziej bezlitosne lustro, w jakim kiedykolwiek przejrzało się nasze społeczeństwo. Na scenie Teatru Jura zderzamy dwa światy, które mówią tym samym językiem, ale kompletnie się nie rozumieją. Czy pod maską weselnych gości kryje się jeszcze jakaś prawda o nas samych, czy zostaliśmy już tylko zbiorem naszych własnych uprzedzeń?', 110.00, 'zdjecia/wesele.jpg'),
@@ -340,8 +358,7 @@ INSERT INTO `uzytkownicy` (`id`, `imie`, `email`, `haslo`, `rola`) VALUES
 (1, 'Jan Kowalski', 'jan@wp.pl', '$2y$10$mC7wS8wV9XpQyE2bZ3uO1eFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtU', 'klient'),
 (2, 'Anna Administrator', 'admin@teatr.pl', '$2y$10$mC7wS8wV9XpQyE2bZ3uO1eFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtU', 'admin'),
 (3, 'Jola Wilk', 'wataha_joli@mail.pl', '$2y$10$Xx3gwBPU9ZAXk96oZO.cpe7eU1eYxF5pgJpg9kdRO12V.AcHIu2Ue', 'admin'),
-(4, 'Jan Kowalski', 'jankowalski@mail.pl', '$2y$10$Xg1lKSE99KakDz7Z9Cjj/esPsAe3VqMRyQ9ASSKzK63P5wtXKmpbS', 'klient'),
-(5, 'Mikuś', 'mnikiel@gmail.com', '$2y$10$TNo4uOr/2WixK2.u9SeJ7u6KjN1mKrdRbUbyNNQT/YH98ELI5iQX2', 'admin');
+(4, 'Jan Kowalski', 'jankowalski@mail.pl', '$2y$10$Xg1lKSE99KakDz7Z9Cjj/esPsAe3VqMRyQ9ASSKzK63P5wtXKmpbS', 'klient');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -363,8 +380,7 @@ ALTER TABLE `miejsca`
 -- Indeksy dla tabeli `obsada`
 --
 ALTER TABLE `obsada`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `spektakl_id` (`spektakl_id`),
+  ADD PRIMARY KEY (`spektakl_id`,`aktor_id`),
   ADD KEY `aktor_id` (`aktor_id`);
 
 --
@@ -413,16 +429,10 @@ ALTER TABLE `miejsca`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
--- AUTO_INCREMENT for table `obsada`
---
-ALTER TABLE `obsada`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `rezerwacje`
 --
 ALTER TABLE `rezerwacje`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `spektakle`
@@ -440,7 +450,7 @@ ALTER TABLE `terminy`
 -- AUTO_INCREMENT for table `uzytkownicy`
 --
 ALTER TABLE `uzytkownicy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
