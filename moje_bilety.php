@@ -85,7 +85,7 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
             
             .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
             .naglowek-sekcji { font-size: 24px; text-align: center; }
-            .powrot { display: block; text-align: center; font-size: 16px; padding: 10px 0; }
+            .powrot { font-size: 12px; }
             
             .panel { padding: 10px; background: transparent; box-shadow: none; }
             

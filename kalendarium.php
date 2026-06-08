@@ -127,7 +127,7 @@ function polskiMiesiacPelny($numerMiesiaca) {
             .kontener-sekcji { margin: 16px auto; padding: 0 12px; }
             .naglowek-sekcji { font-size: 24px; text-align: center; margin-bottom: 20px; }
             
-            .powrot { font-size: 16px; padding: 5px 0; display: block; text-align: center; margin-bottom: 15px; }
+            .powrot { font-size: 12px; }
 
             .separator-miesiaca { font-size: 12px; margin: 30px 0 10px 0; text-align: center; }
 
