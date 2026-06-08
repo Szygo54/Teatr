@@ -143,6 +143,29 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Panel Admina - Teatr Jura</title>
     <style>
+        /* --- STYLIZACJA SUWAKÓW (SCROLLBAR) --- */
+        /* Dla Firefoxa */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #444 #1a1a1a;
+        }
+        /* Dla Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #444; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #666; 
+        }
+        
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; margin:0; }
         main { flex: 1 0 auto; padding-bottom: 50px; }
         
@@ -191,29 +214,26 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         td strong { color: #ffffff; }
 
  
+        /* Minimalistyczne akcje - tylko tekst */
         .btn-action { 
-    display: inline-block; 
-    text-decoration: none; 
-    color: #555;
-    font-size: 11px; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-    transition: color 0.3s ease; 
-    cursor: pointer;
-    border: none;
-    background: none;
-    padding: 0;
-    margin-right: 15px;
-}
+            display: inline-block; 
+            text-decoration: none; 
+            color: #555; /* Bardzo subtelny, ciemnoszary */
+            font-size: 11px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            transition: color 0.3s ease; 
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            margin-right: 15px;
+        }
 
-.btn-action.usun:hover { 
-    color: #9e4747; /* czerwony */
-}
-
-.btn-action.edytuj:hover { 
-    color: #829356; /* zielony */
-}
+        /* Kolory po najechaniu */
+        .btn-action:hover.usun { color: #9e4747; } /* Czerwony przy usuwaniu */
+        .btn-action:hover.edytuj { color: #829356; } /* Zielony przy innych akcjach */
 
         .brak-danych { color: #aaaaaa; font-style: italic; }
     </style>
@@ -326,7 +346,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
                 <?php if (empty($spektakle)): ?>
                     <p class="brak-danych">Baza spektakli jest pusta.</p>
                 <?php else: ?>
-                    <div style="overflow-x: auto;">
+                    <div style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
                         <table>
                             <tr>
                                 <th>Sztuka</th>
