@@ -30,6 +30,7 @@ function polskiMiesiacPelny($numerMiesiaca) {
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarium - Teatr Jura</title>
     <style>
         html, body { height: 100%; margin: 0; padding: 0; }
@@ -38,32 +39,27 @@ function polskiMiesiacPelny($numerMiesiaca) {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #1a1a1a; 
             color: #e0e0e0; 
-            /* To sprawia, że stopka spada na dół: */
             display: flex; 
             flex-direction: column; 
             min-height: 100vh; 
         }
         
-        /* Selektor tagu (bez kropki) */
         main {
             flex: 1 0 auto; 
             padding-bottom: 50px;
         }
         
-        /* --- IDENTYCZNY PASEK NAWIGACJI --- */
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
         .top-bar .link-akcent { color: #829356; }
         .top-bar .link-admin { color: #9e4747; } 
 
-        /* --- IDENTYCZNA GÓRA STRONY (z pliku aktorzy.php) --- */
         .kontener-sekcji { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         .powrot:hover { color: #a4b86c; }
         
-        /* --- ASCETYCZNY MINIMALIZM (Repertuar) --- */
         .separator-miesiaca { 
             font-size: 14px; 
             color: #666; 
@@ -115,13 +111,43 @@ function polskiMiesiacPelny($numerMiesiaca) {
             transition: transform 0.3s ease;
         }
 
-        /* Interakcje (Hover) - ożywają tylko potrzebne elementy */
         .wiersz-spektaklu:hover .w-tytul-tekst { color: #fff; }
         .wiersz-spektaklu:hover .w-dzien { color: #829356; }
         .wiersz-spektaklu:hover .btn-kup { color: #829356; }
         .wiersz-spektaklu:hover .btn-kup::after { transform: translateX(8px); color: #829356; }
 
         .brak-danych { text-align: left; color: #666; font-size: 14px; padding: 40px 0; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* RESPONSYWNOŚĆ MOBILNA */
+        @media (max-width: 768px) {
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; font-size:10px}
+            
+            .kontener-sekcji { margin: 16px auto; padding: 0 12px; }
+            .naglowek-sekcji { font-size: 24px; text-align: center; margin-bottom: 20px; }
+            
+            .powrot { font-size: 16px; padding: 5px 0; display: block; text-align: center; margin-bottom: 15px; }
+
+            .separator-miesiaca { font-size: 12px; margin: 30px 0 10px 0; text-align: center; }
+
+            .wiersz-spektaklu { 
+                grid-template-columns: 50px 1fr auto; 
+                gap: 10px; 
+                padding: 15px 0;
+            }
+            .w-data { text-align: center; }
+            .w-dzien { font-size: 22px; margin-bottom: 2px; }
+            .w-miesiac { font-size: 9px; }
+            
+            .w-info { text-align: left; }
+            .w-tytul-tekst { font-size: 14px; }
+            .w-czas { font-size: 10px; }
+            
+            .w-akcja { text-align: right; }
+            .btn-kup { justify-content: flex-end; font-size: 10px; }
+            .btn-kup::after { font-size: 14px; margin-left: 5px; }
+        }
     </style>
 </head>
 <body>
