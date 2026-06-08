@@ -140,9 +140,9 @@ try {
         /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 768px) {
             /* CZCIONKA JAK W INDEX.PHP NA TELEFONIE */
-            .top-bar { flex-direction: column; gap: 10px; padding: 10px; text-align: center; font-size: 11px; }
-            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-            .top-bar a { margin: 5px; font-size: 11px; }
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; font-size:10px}
             
             .kontener-sekcji { margin: 16px auto; padding: 0 12px; }
             .powrot { font-size: 16px; padding: 5px 0; margin-bottom: 15px; }
