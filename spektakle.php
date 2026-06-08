@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'database.php';
-
+ 
 try {
     $stmt = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle GROUP BY tytul");
     $sztuki = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -9,11 +9,12 @@ try {
     die("Błąd bazy danych: " . $e->getMessage());
 }
 ?>
-
+ 
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wszystkie Sztuki - Teatr Jura</title>
     <style>
         /* STYLE DLA STOPKI */
@@ -26,7 +27,7 @@ try {
         .top-bar a:hover { color: #829356; }
         .top-bar .link-akcent { color: #829356; }
         .top-bar .link-admin { color: #9e4747; } 
-
+ 
         .kontener-sekcji { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; }
         
@@ -41,6 +42,38 @@ try {
         .mini-tresc { padding: 25px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 24px; text-transform: uppercase; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
+ 
+        /* --- RESPONSYWNOŚĆ NA TELEFON --- */
+        @media (max-width: 768px) {
+            /* Pasek nawigacji kaskadowy */
+            .top-bar { flex-direction: column; gap: 15px; padding: 10px; text-align: center; font-size: 10px; }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; font-size: 10px; margin: 5px; }
+ 
+            /* Kontener i nagłówek */
+            .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
+            .naglowek-sekcji { font-size: 22px; letter-spacing: 1px; margin-bottom: 20px; }
+ 
+            /* Plakaty w siatce 2xN na telefonie */
+            .siatka-plakatow { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 15px; 
+            }
+ 
+            /* Mniejsze plakaty */
+            .mini-plakat { height: 180px; }
+            .mini-tresc { padding: 10px; }
+            .mini-tytul { font-size: 14px; }
+ 
+            /* Mniejszy guzik powrotu */
+            .powrot { font-size: 12px; }
+ 
+            /* Mniejszy footer */
+            .stopka-strony { 
+                padding: 15px 10px !important; 
+                font-size: 11px !important; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -63,7 +96,7 @@ try {
                 <?php endif; ?>
             </div>
         </div>
-
+ 
         <div class="kontener-sekcji">
             <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
             <h2 class="naglowek-sekcji">Spektakle</h2>
@@ -86,3 +119,4 @@ try {
     <?php include 'footer.php'; ?>
 </body>
 </html>
+ 

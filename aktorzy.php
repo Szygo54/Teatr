@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'database.php';
-
+ 
 try {
     // Pobieramy wszystkich aktorów z bazy danych
     $stmt = $pdo->query("SELECT imie_nazwisko, zdjecie, specjalizacja FROM Aktorzy");
@@ -10,11 +10,12 @@ try {
     die("Błąd bazy danych: " . $e->getMessage());
 }
 ?>
-
+ 
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zespół Aktorski - Teatr Jura</title>
     <style>
         /* --- NAPRAWIONE STYLE DLA STOPKI I BODY --- */
@@ -42,7 +43,7 @@ try {
         .top-bar a:hover { color: #829356; }
         .top-bar .link-akcent { color: #829356; }
         .top-bar .link-admin { color: #9e4747; } 
-
+ 
         /* --- GÓRA STRONY --- */
         .kontener-sekcji { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
@@ -50,7 +51,7 @@ try {
         /* PRZYWRÓCONY GUZIK POWROTU (zgodny z resztą strony) */
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
         .powrot:hover { color: #a4b86c; }
-
+ 
         /* --- EDYTORIALOWY STYL AKTORÓW --- */
         .siatka-aktorow { 
             display: grid; 
@@ -62,7 +63,7 @@ try {
             text-align: left; 
             cursor: pointer;
         }
-
+ 
         /* Zdjęcie (teraz z zaokrąglonymi rogami) */
         .zdjecie-aktora { 
             height: 380px; 
@@ -81,13 +82,13 @@ try {
             filter: grayscale(100%); 
             transition: transform 0.6s ease, filter 0.6s ease; 
         }
-
+ 
         /* Interakcja (Hover) */
         .karta-aktora:hover .zdjecie-aktora img { 
             transform: scale(1.05); 
             filter: grayscale(0%); 
         }
-
+ 
         /* Tekst pod zdjęciem */
         .dane-aktora { 
             padding: 0 5px; 
@@ -110,15 +111,49 @@ try {
             letter-spacing: 3px; 
             text-transform: uppercase; 
         }
-
+ 
         .karta-aktora:hover .imie-aktora {
             color: #fff; 
+        }
+ 
+        /* --- RESPONSYWNOŚĆ NA TELEFON --- */
+        @media (max-width: 768px) {
+            /* Pasek nawigacji kaskadowy */
+            .top-bar { flex-direction: column; gap: 15px; padding: 10px; text-align: center; font-size: 10px; }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; font-size: 10px; margin: 5px; }
+ 
+            /* Kontener i nagłówek */
+            .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
+            .naglowek-sekcji { font-size: 22px; letter-spacing: 1px; margin-bottom: 20px; }
+ 
+            /* Aktorzy - 2 kolumny na telefonach */
+            .siatka-aktorow { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 20px 15px; 
+            }
+ 
+            /* Mniejsze zdjęcia */
+            .zdjecie-aktora { height: 180px; border-radius: 8px; }
+ 
+            /* Mniejszy tekst */
+            .imie-aktora { font-size: 14px; letter-spacing: 0.5px; }
+            .rola-aktora { font-size: 9px; letter-spacing: 2px; }
+ 
+            /* Mniejszy guzik powrotu */
+            .powrot { font-size: 12px; }
+ 
+            /* Mniejszy footer */
+            .stopka-strony { 
+                padding: 15px 10px !important; 
+                font-size: 11px !important; 
+            }
         }
     </style>
 </head>
 <body>
     <main>
-
+ 
         <div class="top-bar">
             <div>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -137,7 +172,7 @@ try {
                 <?php endif; ?>
             </div>
         </div>
-
+ 
         <div class="kontener-sekcji">
             <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
             <h2 class="naglowek-sekcji">Nasz Zespół</h2>
