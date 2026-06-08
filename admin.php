@@ -141,6 +141,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admina - Teatr Jura</title>
     <style>
         /* --- STYLIZACJA SUWAKÓW (SCROLLBAR) --- */
@@ -195,6 +196,13 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         .stat-wartosc { color: #ffffff; font-size: 32px; font-weight: bold; margin: 0; }
         .stat-wartosc span { color: #829356; font-size: 18px; }
 
+        .sekcja-dwie-kolumny { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .sekcja-aktorzy-kolumny { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+        gap: 40px; 
+        margin-bottom: 40px;}
+
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .form-full { grid-column: 1 / -1; }
 
@@ -207,7 +215,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         .btn-dodaj { background-color: #829356; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; display: block; width: 100%; }
         .btn-dodaj:hover { background-color: #6a7944; }
 
-        table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
         th, td { padding: 15px; border-bottom: 1px solid #444; }
         th { background-color: #1a1a1a; color: #aaaaaa; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; font-weight: bold; }
         tr:hover { background-color: #333; }
@@ -218,7 +226,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         .btn-action { 
             display: inline-block; 
             text-decoration: none; 
-            color: #555; /* Bardzo subtelny, ciemnoszary */
+            color: #555; 
             font-size: 11px; 
             font-weight: bold; 
             text-transform: uppercase; 
@@ -231,11 +239,37 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
             margin-right: 15px;
         }
 
-        /* Kolory po najechaniu */
-        .btn-action:hover.usun { color: #9e4747; } /* Czerwony przy usuwaniu */
-        .btn-action:hover.edytuj { color: #829356; } /* Zielony przy innych akcjach */
+        .btn-action:hover.usun { color: #9e4747; } 
+        .btn-action:hover.edytuj { color: #829356; } 
 
         .brak-danych { color: #aaaaaa; font-style: italic; }
+
+        /* RESPONSYWNOŚĆ MOBILNA */
+        @media (max-width: 430px) {
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
+            .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .top-bar a { margin-left: 0; font-size: 11px; }
+
+            .header-sekcja h1 { font-size: 32px; }
+            .podtytul { font-size: 11px; }
+
+            .sekcja-dwie-kolumny, .sekcja-aktorzy-kolumny { grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .sekcja-aktorzy-kolumny {grid-template-columns: 1fr;}
+            .panel { padding: 20px; margin-bottom: 20px; }
+            .sekcja-aktorzy-kolumny .panel { overflow: hidden; }
+            .sekcja-aktorzy-kolumny div[style] { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+
+            /* Tabela teraz ma min-width, więc wymusi suwak zamiast się nakładać */
+            table { font-size: 12px; }
+            .panel:not(.aktorzy-lista) table { min-width: 500px; }
+            th, td { padding: 10px 5px; }
+            
+            /* Kontener tabeli musi mieć scroll */
+            .panel div[style*="overflow-x: auto"] { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            
+            .btn-action { margin-right: 8px; font-size: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -288,7 +322,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+            <div class="sekcja-dwie-kolumny">
                 <div class="panel" style="margin-bottom: 0;">
                     <h3>Dodaj nowy spektakl</h3>
                     <form method="POST" action="" enctype="multipart/form-data">
@@ -370,7 +404,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-bottom: 40px;">
+            <div class="sekcja-aktorzy-kolumny">
                 <div class="panel" style="margin-bottom: 0;">
                     <h3>Dodaj Aktora</h3>
                     <form method="POST" action="" enctype="multipart/form-data">
@@ -393,7 +427,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="panel" style="margin-bottom: 0;">
                     <h3>Zespół Aktorski</h3>
-                    <div style="overflow-y: auto; max-height: 400px;">
+                    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
                         <table>
                             <tr>
                                 <th>Aktor</th>
@@ -445,7 +479,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="panel">
-                <h3>Baza Rezerwacji (Bilety)</h3>
+                <h3>Baza Rezerwacji Biletów</h3>
                 <?php if (empty($rezerwacje)): ?>
                     <p class="brak-danych">Aktualnie nie ma żadnych sprzedanych biletów.</p>
                 <?php else: ?>
