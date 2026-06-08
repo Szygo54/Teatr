@@ -121,7 +121,7 @@ try {
             /* Pasek nawigacji kaskadowy */
             .top-bar { flex-direction: column; gap: 15px; padding: 10px; text-align: center; font-size: 10px; }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-            .top-bar a { margin-left: 0; font-size: 10px; margin: 5px; }
+            .top-bar a { margin-left: 0; font-size: 10px;}
  
             /* Kontener i nagłówek */
             .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
@@ -155,23 +155,23 @@ try {
     <main>
  
         <div class="top-bar">
-            <div>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
-                <?php endif; ?>
-            </div>
-            <div>
-                <a href="index.php">Strona Główna</a>
-                <a href="spektakle.php">Repertuar</a>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
-                    <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
-                    <a href="wyloguj.php">Wyloguj</a>
-                <?php else: ?>
-                    <a href="logowanie.php">Zaloguj się</a>
-                <?php endif; ?>
-            </div>
-        </div>
+    <div>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            Witaj, <strong style="color: #ffffff;"><?= htmlspecialchars($_SESSION['user_imie']) ?></strong>
+        <?php endif; ?>
+    </div>
+    <div>
+        <a href="index.php">Strona Główna</a>
+        <a href="spektakle.php">Repertuar</a>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="moje_bilety.php" class="link-akcent">Moje bilety</a>
+            <?php if (isset($_SESSION['user_rola']) && $_SESSION['user_rola'] === 'admin'): ?><a href="admin.php" class="link-admin">Panel Admina</a><?php endif; ?>
+            <a href="wyloguj.php">Wyloguj</a>
+        <?php else: ?>
+            <a href="logowanie.php">Zaloguj się</a>
+        <?php endif; ?>
+    </div>
+    </div>
  
         <div class="kontener-sekcji">
             <a href="index.php" class="powrot">&larr; Wróć na stronę główną</a>
