@@ -245,7 +245,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         .brak-danych { color: #aaaaaa; font-style: italic; }
 
         /* RESPONSYWNOŚĆ MOBILNA */
-        @media (max-width: 430px) {
+        @media (max-width: 450px) {
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
             .top-bar a { margin-left: 0; font-size: 11px; }
