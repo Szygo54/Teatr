@@ -415,7 +415,7 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
                                     <?php if ($u['rola'] !== 'admin'): ?>
                                         <a href="admin.php?usun_uzytkownika=<?= $u['id'] ?>" class="btn-action usun" onclick="return confirm('Trwale usunąć tego użytkownika i jego dane?');">Zablokuj / Usuń</a>
                                     <?php else: ?>
-                                        <span style="color:#666; font-size: 11px;">Główny Admin</span>
+                                        <span style="text-transform: uppercase; font-size: 11px; color:#666; font-weight:bold;">Główny Admin</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
