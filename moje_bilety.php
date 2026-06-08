@@ -52,6 +52,8 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         html, body { height: 100%; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; }
         main { flex: 1 0 auto; padding-bottom: 50px; }
+
+        
         
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
@@ -77,9 +79,9 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 
         /* KARTY BILETÓW NA TELEFONIE */
         @media (max-width: 768px) {
-            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-            .top-bar a { margin-left: 0; font-size: 12px; }
+            .top-bar a { margin-left: 0; font-size:10px}
             
             .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
             .naglowek-sekcji { font-size: 24px; text-align: center; }

@@ -140,9 +140,9 @@ function polskiMiesiac($numerMiesiaca) {
         /* ---------------------------------------------------- */
         @media (max-width: 768px) {
             /* Pasek nawigacji kaskadowy */
-            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
+            .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-            .top-bar a { margin-left: 0; }
+            .top-bar a { margin-left: 0; font-size:10px}
 
             /* ZMNIEJSZONA GÓRA I LOGO */
             .logo-teatru { max-width: 70px; } 
