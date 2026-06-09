@@ -17,7 +17,6 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wszystkie Sztuki - Teatr Jura</title>
     <style>
-        /* STYLE DLA STOPKI */
         html, body { height: 100%; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; }
         main { flex: 1 0 auto; padding-bottom: 50px; }
@@ -31,7 +30,6 @@ try {
         .kontener-sekcji { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
         .naglowek-sekcji { font-size: 32px; color: #fff; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; text-transform: uppercase; }
         
-        /* Siatka plakatów */
         .siatka-plakatow { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
         .karta-sztuki { background: #262626; border-radius: 8px; overflow: hidden; text-decoration: none; transition: transform 0.3s; display: flex; flex-direction: column; }
         .karta-sztuki:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
@@ -42,33 +40,26 @@ try {
         .mini-tresc { padding: 25px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 24px; text-transform: uppercase; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; }
- 
-        /* --- RESPONSYWNOŚĆ NA TELEFON --- */
+
         @media (max-width: 768px) {
-            /* Pasek nawigacji kaskadowy */
             .top-bar { flex-direction: column; gap: 15px; padding: 10px; text-align: center; font-size: 10px; }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
             .top-bar a { margin-left: 0; font-size: 10px; margin: 5px; }
  
-            /* Kontener i nagłówek */
             .kontener-sekcji { margin: 20px auto; padding: 0 15px; }
             .naglowek-sekcji { font-size: 22px; letter-spacing: 1px; margin-bottom: 20px; }
  
-            /* Plakaty w siatce 2xN na telefonie */
             .siatka-plakatow { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 15px; 
             }
  
-            /* Mniejsze plakaty */
             .mini-plakat { height: 180px; }
             .mini-tresc { padding: 10px; }
             .mini-tytul { font-size: 14px; }
  
-            /* Mniejszy guzik powrotu */
             .powrot { font-size: 12px; }
  
-            /* Mniejszy footer */
             .stopka-strony { 
                 padding: 15px 10px !important; 
                 font-size: 11px !important; 

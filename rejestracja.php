@@ -10,18 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $haslo = $_POST['haslo'];
 
     if (!empty($imie) && !empty($email) && !empty($haslo)) {
-        // Hashowanie hasła - absolutna podstawa bezpieczeństwa!
         $haslo_hash = password_hash($haslo, PASSWORD_DEFAULT);
 
         try {
-            // Sprawdzamy, czy mail już istnieje
             $stmt = $pdo->prepare("SELECT id FROM Uzytkownicy WHERE email = ?");
             $stmt->execute([$email]);
             
             if ($stmt->rowCount() > 0) {
                 $komunikat = "Konto z tym adresem e-mail już istnieje.";
             } else {
-                // Wrzucamy do bazy
                 $stmt = $pdo->prepare("INSERT INTO Uzytkownicy (imie, email, haslo) VALUES (?, ?, ?)");
                 $stmt->execute([$imie, $email, $haslo_hash]);
                 $komunikat = "Rejestracja udana! Możesz się teraz zalogować.";
@@ -41,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Rejestracja - Teatr Jura</title>
     <style>
-        /* Główne tło i czcionka - spójne z logowaniem */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #1a1a1a; 
@@ -54,16 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-height: 100vh;
         }
 
-        /* Logo nad formularzem - POWIĘKSZONE */
         .logo-img { 
             width: 100%;
-            max-width: 320px; /* Zmieniono z 220px na 320px */
+            max-width: 320px; 
             height: auto;
             margin-bottom: 40px; 
             display: block;
         }
 
-        /* Elegancki kontener formularza */
         .form-container {
             background-color: #262626; 
             padding: 40px;
@@ -82,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
         }
 
-        /* Style dla komunikatów (błąd vs sukces) */
         .komunikat-error, .komunikat-sukces {
             color: #fff;
             padding: 12px;
@@ -93,14 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .komunikat-error {
-            background-color: #9e4747; /* Ceglasty czerwony */
+            background-color: #9e4747; 
         }
         
         .komunikat-sukces {
-            background-color: #829356; /* Ziemista oliwka */
+            background-color: #829356;
         }
 
-        /* Pola tekstowe formularza */
         label {
             display: block;
             color: #aaaaaa;
@@ -132,7 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-color: #829356;
         }
 
-        /* Przycisk rejestracji */
         button[type="submit"] { 
             width: 100%;
             padding: 15px; 
@@ -153,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #6a7944; 
         }
 
-        /* Link do logowania na dole */
         .link-logowanie {
             display: block;
             text-align: center;

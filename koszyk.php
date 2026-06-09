@@ -2,13 +2,11 @@
 session_start();
 require_once 'database.php';
 
-// Wymuszamy logowanie
 if (!isset($_SESSION['user_id'])) {
     header("Location: logowanie.php");
     exit;
 }
 
-// Zmieniamy logikę na obsługę termin_id
 if (!isset($_POST['wybrane_miejsca']) || empty($_POST['wybrane_miejsca'])) {
     $t_id = isset($_POST['termin_id']) ? (int)$_POST['termin_id'] : 0;
     if ($t_id > 0) {
@@ -23,7 +21,6 @@ $termin_id = (int)$_POST['termin_id'];
 $wybrane_miejsca = $_POST['wybrane_miejsca'];
 
 try {
-    // NAPRAWA ZAPYTANIA: Pobieramy tytuł i cenę przez JOIN z Terminami
     $stmt = $pdo->prepare("SELECT s.tytul, s.cena 
                            FROM Spektakle s 
                            JOIN Terminy t ON s.id = t.spektakl_id 
@@ -53,7 +50,6 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Koszyk - Teatr Jura</title>
     <style>
-        /* --- STYLE DLA STOPKI I UKŁADU STRONY --- */
         html, body { 
             height: 100%; 
             margin: 0; 
@@ -68,7 +64,7 @@ try {
             min-height: 100vh; 
         }
         main {
-            flex: 1 0 auto; /* Wypycha stopkę w dół */
+            flex: 1 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -77,7 +73,6 @@ try {
             box-sizing: border-box;
         }
 
-        /* --- RESZTA STYLÓW --- */
         .logo-img { width: 100%; max-width: 120px; margin-bottom: 30px; }
         .podsumowanie { background-color: #262626; padding: 40px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; box-sizing: border-box; }
         h2 { font-weight: 300; letter-spacing: 2px; margin-top: 0; text-transform: uppercase; }
@@ -97,7 +92,7 @@ try {
         .metoda-radio:hover .znacznik { border-color: #829356; }
         .metoda-radio input[type="radio"]:checked + .znacznik { background-color: #829356; border-color: #829356; color: #ffffff; box-shadow: 0 4px 10px rgba(130, 147, 86, 0.4); }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
+
         @media (max-width: 768px) {
             main { padding: 20px 15px; }
             .logo-img { margin-bottom: 20px; max-width: 90px; }
@@ -107,7 +102,6 @@ try {
             .lista-miejsc { padding: 12px; font-size: 14px; }
             .kwota-akcent { font-size: 20px; margin: 20px 0; }
             
-            /* Metody płatności układają się pionowo na całą szerokość na telefonie */
             .metody-kontener { flex-direction: column; gap: 10px; }
             .metoda-radio { width: 100%; display: block; }
             .metoda-radio .znacznik { text-align: center; padding: 15px; }

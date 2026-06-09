@@ -2,13 +2,11 @@
 session_start();
 require_once 'database.php';
 
-// Wymuszamy logowanie
 if (!isset($_SESSION['user_id'])) {
     header("Location: logowanie.php");
     exit;
 }
 
-// Zmieniamy z spektakl_id na termin_id
 if (!isset($_GET['termin_id'])) {
     die("Błąd: Nie wybrano terminu spektaklu.");
 }
@@ -16,7 +14,6 @@ if (!isset($_GET['termin_id'])) {
 $termin_id = (int)$_GET['termin_id'];
 
 try {
-    // 1. Pobieramy informacje o spektaklu i terminie przez JOIN
     $stmt = $pdo->prepare("SELECT s.tytul, s.cena, t.data_wystawienia, t.spektakl_id 
                            FROM Terminy t 
                            JOIN Spektakle s ON t.spektakl_id = s.id 
@@ -26,11 +23,9 @@ try {
 
     if (!$spektakl) die("Taki termin nie istnieje.");
 
-    // 2. Pobieramy WSZYSTKIE miejsca
     $stmtMiejsca = $pdo->query("SELECT id, rzad, numer FROM Miejsca ORDER BY rzad, numer");
     $wszystkie_miejsca = $stmtMiejsca->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Pobieramy ZAJĘTE miejsca DLA TEGO KONKRETNEGO TERMINU
     $stmtZajete = $pdo->prepare("SELECT miejsce_id FROM Rezerwacje WHERE termin_id = ?");
     $stmtZajete->execute([$termin_id]);
     $zajete_id = $stmtZajete->fetchAll(PDO::FETCH_COLUMN);
@@ -47,7 +42,6 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wybierz miejsca - Teatr Jura</title>
     <style>
-        /* KLUCZOWE STYLE DLA STOPKI */
         html, body { 
             height: 100%; 
             margin: 0; 
@@ -61,13 +55,12 @@ try {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            overflow-x: hidden; /* Zapobiega przewijaniu całej strony w poziomie */
+            overflow-x: hidden; 
         }
         main {
             flex: 1 0 auto; 
             padding: 40px 20px;
         }
-        /* KONIEC STYLÓW DLA STOPKI */
 
         h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
         .spektakl-info { color: #aaaaaa; margin-bottom: 40px; font-size: 15px; }
@@ -75,11 +68,10 @@ try {
         .logo-img { width: 100%; max-width: 120px; height: auto; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
         .scena { background-color: #333; height: 45px; width: 100%; max-width: 850px; margin: 0 auto 40px auto; border-radius: 5px 5px 20px 20px; display: flex; justify-content: center; align-items: center; color: #888; font-weight: bold; font-size: 18px; letter-spacing: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         
-        /* KONTENER POZWALAJĄCY NA SCROLLOWANIE SALI NA TELEFONIE */
         .sala-kontener {
             width: 100%;
-            overflow-x: auto; /* Pozwala na przewijanie w poziomie */
-            padding-bottom: 20px; /* Miejsce na suwak */
+            overflow-x: auto; 
+            padding-bottom: 20px; 
             margin-bottom: 20px;
         }
 
@@ -89,7 +81,7 @@ try {
             gap: 12px; 
             max-width: 850px; 
             margin: 0 auto; 
-            min-width: 600px; /* Wymusza minimalną szerokość, aby fotele nie były za małe */
+            min-width: 600px; 
         }
         
         .fotel-label { display: flex; align-items: center; justify-content: center; height: 50px; background-color:rgb(231, 229, 222); color: #1a1a1a; border-radius: 8px 8px 4px 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; }
@@ -100,20 +92,17 @@ try {
         .przycisk-koszyk { margin-top: 10px; padding: 16px 45px; background-color: #829356; color: #ffffff; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         .przycisk-koszyk:hover { background-color: #6a7944; }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 768px) {
             main { padding: 30px 15px; }
             h2 { font-size: 20px; }
             .spektakl-info { font-size: 13px; margin-bottom: 30px; }
             .scena { font-size: 14px; letter-spacing: 4px; height: 35px; margin-bottom: 30px; }
             
-            /* Zmniejszamy fotele na telefonie, ale nadal pozwalamy na scroll */
             .sala { gap: 6px; min-width: 480px; }
             .fotel-label { height: 40px; font-size: 10px; border-radius: 4px; }
             
             .przycisk-koszyk { width: 100%; font-size: 16px; padding: 15px 20px; }
 
-            /* Ukrywa suwak w przeglądarkach Webkit dla estetyki (nadal można przewijać palcem) */
             .sala-kontener::-webkit-scrollbar { height: 6px; }
             .sala-kontener::-webkit-scrollbar-track { background: #1a1a1a; }
             .sala-kontener::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }

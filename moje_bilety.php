@@ -11,7 +11,6 @@ $uzytkownik_id = $_SESSION['user_id'];
 $imie_uzytkownika = $_SESSION['user_imie'];
 
 try {
-    // Łączymy Rezerwacje -> Terminy -> Spektakle
     $sql = "SELECT r.id as rezerwacja_id, s.tytul, t.data_wystawienia, m.rzad, m.numer, r.data_zakupu 
             FROM Rezerwacje r
             JOIN Terminy t ON r.termin_id = t.id
@@ -27,7 +26,6 @@ try {
     die("Błąd bazy: " . $e->getMessage());
 }
 
-// Konwersja obrazków na format Base64 dla PDF
 function getBase64Image($path) {
     if (file_exists($path)) {
         $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -74,10 +72,8 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         .btn-pdf { background-color: #829356; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .btn-pdf:hover { background-color: #6a7944; }
 
-        /* Szablony biletów po prostu ukrywamy na stronie */
         #ukryte-szablony { display: none; }
 
-        /* KARTY BILETÓW NA TELEFONIE */
         @media (max-width: 768px) {
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
@@ -228,11 +224,9 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
 
     <script>
         function generujBilet(id) {
-            // Pobieramy oryginalny ukryty element
             const oryginalnyEl = document.getElementById('szablon-' + id);
             
-            // Klonujemy go do tymczasowego kontenera wymuszającego 800px szerokości
-            // Dzięki temu telefon (który ma np. 390px) nie utnie nam prawej strony biletu (z kodem QR!)
+
             const wrapper = document.createElement('div');
             wrapper.style.position = 'fixed';
             wrapper.style.top = '0';
@@ -253,7 +247,6 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
             
-            // Po zapisaniu PDF usuwamy nasz tymczasowy kontener
             html2pdf().set(opcje).from(klon).save().then(() => {
                 document.body.removeChild(wrapper); 
             });

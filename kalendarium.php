@@ -118,7 +118,6 @@ function polskiMiesiacPelny($numerMiesiaca) {
 
         .brak-danych { text-align: left; color: #666; font-size: 14px; padding: 40px 0; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 768px) {
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }

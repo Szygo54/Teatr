@@ -3,25 +3,21 @@ session_start();
 require_once 'database.php';
 
 try {
-    // 1. Zmieniający się spektakl (Hero) - JOIN z tabelą Terminy
     $stmtPolecany = $pdo->query("SELECT s.id, s.tytul, s.opis, t.data_wystawienia, s.cena, s.plakat 
                                  FROM Spektakle s 
                                  JOIN Terminy t ON s.id = t.spektakl_id 
                                  ORDER BY RAND() LIMIT 1");
     $polecany = $stmtPolecany->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Skrócony harmonogram - pobieramy z tabeli Terminy połączonej ze Spektaklami
     $stmtHarmonogram = $pdo->query("SELECT t.id AS termin_id, s.tytul, t.data_wystawienia, s.id AS spektakl_id 
                                      FROM Terminy t 
                                      JOIN Spektakle s ON t.spektakl_id = s.id 
                                      ORDER BY t.data_wystawienia ASC LIMIT 4");
     $harmonogram = $stmtHarmonogram->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Spis sztuk do kafelków z plakatami (ograniczone do pierwszych 4)
     $stmtSztuki = $pdo->query("SELECT id, tytul, opis, plakat FROM Spektakle LIMIT 4");
     $sztuki = $stmtSztuki->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Pobieranie 4 losowych aktorów z bazy danych
     $stmtAktorzy = $pdo->query("SELECT imie_nazwisko, zdjecie, specjalizacja FROM Aktorzy ORDER BY RAND() LIMIT 4");
     $aktorzy = $stmtAktorzy->fetchAll(PDO::FETCH_ASSOC);
 
@@ -78,7 +74,6 @@ function polskiMiesiac($numerMiesiaca) {
         .naglowek-sekcji a { font-size: 28px; color: #fff; text-decoration: none; transition: 0.3s; }
         .naglowek-sekcji a:hover { color: #829356; }
 
-        /* HERO */
         .hero-karta { display: block; text-decoration: none; background: #333; border-radius: 8px; overflow: hidden; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: 0.3s; }
         .hero-karta:hover { transform: translateY(-5px); }
         .hero-plakat { height: 450px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; }
@@ -87,7 +82,6 @@ function polskiMiesiac($numerMiesiaca) {
         .hero-tytul { font-size: 42px; color: white; margin: 0 0 10px 0; text-transform: uppercase; }
         .hero-info { color: #ccc; font-size: 16px; }
 
-        /* HARMONOGRAM */
         .lista-spektakli { display: flex; flex-direction: column; }
         .wiersz-spektaklu { 
             display: grid; 
@@ -115,7 +109,6 @@ function polskiMiesiac($numerMiesiaca) {
         .wiersz-spektaklu:hover .btn-kup { color: #829356; }
         .wiersz-spektaklu:hover .btn-kup::after { transform: translateX(8px); color: #829356; }
 
-        /* PLAKATY */
         .siatka-plakatow { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
         .karta-sztuki { background: #262626; border-radius: 8px; overflow: hidden; text-decoration: none; transition: 0.3s; display: block; }
         .karta-sztuki:hover { transform: scale(1.03); }
@@ -124,7 +117,6 @@ function polskiMiesiac($numerMiesiaca) {
         .mini-tresc { padding: 20px; text-align: center; }
         .mini-tytul { color: white; margin: 0; font-size: 20px; text-transform: uppercase; }
 
-        /* AKTORZY */
         .siatka-aktorow-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
         .karta-aktora-index { text-align: left; cursor: pointer; }
         .zdjecie-aktora-index { height: 380px; background: #111; overflow: hidden; margin-bottom: 15px; border-radius: 12px; }
@@ -135,25 +127,20 @@ function polskiMiesiac($numerMiesiaca) {
         .rola-aktora-index { color: #829356; font-size: 11px; margin: 0; letter-spacing: 3px; text-transform: uppercase; }
         .karta-aktora-index:hover .imie-aktora-index { color: #fff; }
 
-        /* ---------------------------------------------------- */
-        /* MEDIA QUERIES - MAGIA DLA TELEFONÓW (Poniżej 768px) */
-        /* ---------------------------------------------------- */
+
         @media (max-width: 768px) {
-            /* Pasek nawigacji kaskadowy */
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
             .top-bar a { margin-left: 0; font-size:10px}
 
-            /* ZMNIEJSZONA GÓRA I LOGO */
             .logo-teatru { max-width: 70px; } 
             .header-sekcja h1 { font-size: 28px; letter-spacing: 2px; margin-top: 10px; } 
             .podtytul { font-size: 10px; letter-spacing: 2px; } 
             .hero-tytul { font-size: 26px; }
             .naglowek-sekcji a { font-size: 22px; }
 
-            /* ZMNIEJSZONY I KOMPAKTOWY HARMONOGRAM (W jednej linii, mniejsze fonty) */
             .wiersz-spektaklu { 
-                grid-template-columns: 50px 1fr auto; /* 3 dopasowane kolumny */
+                grid-template-columns: 50px 1fr auto; 
                 gap: 10px; 
                 text-align: left; 
                 padding: 15px 0;
@@ -167,7 +154,6 @@ function polskiMiesiac($numerMiesiaca) {
             .btn-kup { justify-content: flex-end; font-size: 10px; }
             .btn-kup::after { font-size: 14px; margin-left: 5px; }
 
-            /* PLAKATY W SIATCE 2xN NA TELEFONIE */
             .siatka-plakatow { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 15px; 
@@ -176,7 +162,6 @@ function polskiMiesiac($numerMiesiaca) {
             .mini-tresc { padding: 10px; }
             .mini-tytul { font-size: 14px; }
 
-            /* Aktorzy - 2 kolumny na telefonach */
             .siatka-aktorow-index { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 15px; 
@@ -185,16 +170,13 @@ function polskiMiesiac($numerMiesiaca) {
             .imie-aktora-index { font-size: 14px; }
             .rola-aktora-index { font-size: 9px; }
 
-            /* MNIEJSZY FOOTER NA TELEFONIE */
             .stopka-strony { 
                 padding: 15px 10px !important; 
                 font-size: 11px !important; 
             }
-            /* ZMNIEJSZENIE MENU */
             .top-bar { padding: 10px; font-size: 11px; }
             .top-bar a { margin: 5px; }
 
-            /* ZMNIEJSZENIE PLAKATU HERO */
             .hero-plakat { height: 250px; } 
             .hero-tytul { font-size: 20px; } 
             .hero-tresc { padding: 15px; }

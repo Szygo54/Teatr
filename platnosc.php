@@ -16,7 +16,6 @@ $imie_uzytkownika = $_SESSION['user_imie'];
 $sukces_db = true;
 $komunikat_bledu = "";
 
-// 1. Rezerwacja w bazie danych
 foreach ($miejsca_do_zapisu as $m_id) {
     try {
         $stmt = $pdo->prepare("INSERT INTO Rezerwacje (uzytkownik_id, termin_id, miejsce_id) VALUES (?, ?, ?)");
@@ -27,7 +26,6 @@ foreach ($miejsca_do_zapisu as $m_id) {
     }
 }
 
-// 2. Pobieranie danych do PDF
 if ($sukces_db) {
     $stmtS = $pdo->prepare("SELECT s.tytul, t.data_wystawienia 
                             FROM Spektakle s 
@@ -42,7 +40,6 @@ if ($sukces_db) {
     $info_miejsca = $stmtM->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// 3. Konwersja obrazków na format Base64 
 function getBase64Image($path) {
     if (file_exists($path)) {
         $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -64,7 +61,6 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
     <title>Przetwarzanie płatności - Teatr Jura</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* KLUCZOWE STYLE DLA STOPKI I UKŁADU */
         html, body { 
             height: 100%; 
             margin: 0; 
@@ -79,11 +75,11 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
             min-height: 100vh; 
         }
         main {
-            flex: 1 0 auto; /* Wypycha stopkę w dół */
+            flex: 1 0 auto; 
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Centruje okienko płatności */
+            justify-content: center; 
             padding: 20px;
             box-sizing: border-box;
         }
@@ -95,7 +91,6 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
             pointer-events: none;
         }
 
-        /* RESZTA STYLÓW */
         .okno-platnosci { background-color: #262626; padding: 40px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; box-sizing: border-box; }
         
         #ekran-blik, #ekran-ladowania, #ekran-sukcesu { display: none; }
@@ -116,7 +111,6 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
         .przycisk-powrot { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: #333; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
         .przycisk-powrot:hover { background-color: #444; }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 768px) {
             main { padding: 15px; }
             .okno-platnosci { padding: 30px 15px; }
@@ -125,7 +119,7 @@ $qr_base64 = getBase64Image('zdjecia/qr.png');
                 width: 100%; 
                 max-width: 220px; 
                 font-size: 28px; 
-                letter-spacing: 10px; /* Zmniejszony odstęp dla małych ekranów */
+                letter-spacing: 10px; 
                 padding: 12px;
             }
             .okno-platnosci h2 { font-size: 20px; }

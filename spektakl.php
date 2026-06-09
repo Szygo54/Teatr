@@ -10,7 +10,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $id_spektaklu = (int)$_GET['id'];
 
 try {
-    // 1. Pobieranie danych spektaklu
     $sql = "SELECT s.*, MIN(t.data_wystawienia) as najblizszy_termin, t.id as termin_id
             FROM Spektakle s
             LEFT JOIN Terminy t ON s.id = t.spektakl_id
@@ -25,7 +24,6 @@ try {
         die("Błąd 404: Taki spektakl nie istnieje. <a href='index.php'>Wróć</a>");
     }
 
-    // 2. Pobieranie obsady (aktorów) z tabeli łączącej
     $sqlAktorzy = "SELECT a.imie_nazwisko, a.zdjecie, a.specjalizacja 
                    FROM Aktorzy a
                    JOIN Obsada o ON a.id = o.aktor_id
@@ -34,7 +32,6 @@ try {
     $stmtAktorzy->execute([$id_spektaklu]);
     $obsada = $stmtAktorzy->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Pobieranie wszystkich terminów dla tego spektaklu
     $sqlTerminy = "SELECT id, data_wystawienia FROM Terminy WHERE spektakl_id = ? ORDER BY data_wystawienia ASC";
     $stmtTerminy = $pdo->prepare($sqlTerminy);
     $stmtTerminy->execute([$id_spektaklu]);
@@ -52,7 +49,6 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($spektakl['tytul']) ?> - Teatr Jura</title>
     <style>
-        /* KLUCZOWE STYLE DLA STOPKI */
         html, body { 
             height: 100%; 
             margin: 0; 
@@ -71,14 +67,12 @@ try {
             padding-bottom: 50px;
         }
         
-        /* GÓRNY PASEK */
         .top-bar { background-color: #262626; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px; }
         .top-bar a { color: #aaaaaa; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
         .top-bar a:hover { color: #829356; }
         .top-bar .link-akcent { color: #829356; }
         .top-bar .link-admin { color: #9e4747; } 
         
-        /* LAYOUT GŁÓWNY */
         .kontener-sekcji { max-width: 1250px; margin: 40px auto; padding: 0 20px; }
         .powrot { display: inline-block; margin-bottom: 20px; color: #829356; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
         .powrot:hover { color: #a4b86c; }
@@ -101,7 +95,6 @@ try {
         .btn-wielki { display: block; background: #829356; color: white; text-align: center; padding: 20px; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase; border-radius: 5px; transition: 0.3s; }
         .btn-wielki:hover { background: #6a7944; }
 
-        /* ZMIENIONY STYL: Minimalistyczne terminy spektakli */
         .terminy-sekcja { margin-top: 50px; background: transparent; padding: 0; box-shadow: none; border-radius: 0; }
         .terminy-naglowek { color: #fff; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; letter-spacing: 2px; }
         .terminy-siatka { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
@@ -120,13 +113,11 @@ try {
         .termin-karta:hover .termin-btn { color: #829356; }
         .termin-karta:hover .termin-btn::after { transform: translateX(5px); color: #829356; }
 
-        /* OBSADA */
         .obsada-sekcja { margin-top: 50px; background: #262626; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .obsada-naglowek { color: #829356; font-size: 28px; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 10px; margin-top: 0; margin-bottom: 30px; }
         .aktorzy-siatka { display: flex; flex-wrap: wrap; gap: 40px; justify-content: flex-start; }
         .aktor-karta { text-align: center; width: 200px; }
         
-        /* ZMIENIONY STYL: Usunięto hover (statyczne zdjęcie) */
         .aktor-zdjecie { 
             width: 190px; 
             height: 270px; 
@@ -137,9 +128,7 @@ try {
         .aktor-imie { font-size: 16px; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
         .aktor-specjalizacja { font-size: 12px; color: #aaa; text-transform: uppercase; }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 768px) {
-            /* CZCIONKA JAK W INDEX.PHP NA TELEFONIE */
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; font-size:10px }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
             .top-bar a { margin-left: 0; font-size:10px}
@@ -150,7 +139,6 @@ try {
             .spektakl-layout { flex-direction: column; gap: 0; padding: 20px 16px; }
             .kolumna-lewa, .kolumna-prawa { flex: unset; width: 100%; }
             
-            /* Plakat dopasowany do mniejszego ekranu */
             .plakat-duzy { 
                 height: 350px; 
                 max-height: none; 
@@ -177,7 +165,6 @@ try {
             .obsada-sekcja { padding: 20px 16px; margin-top: 30px; }
             .obsada-naglowek { font-size: 22px; margin-bottom: 20px; }
             
-            /* Aktorzy ładnie układają się po 2 w rzędzie na telefonie */
             .aktorzy-siatka { gap: 15px; justify-content: center; }
             .aktor-karta { width: calc(50% - 10px); }
             .aktor-zdjecie { width: 100%; height: auto; aspect-ratio: 19 / 27; margin-bottom: 10px; }

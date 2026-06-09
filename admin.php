@@ -2,14 +2,12 @@
 session_start();
 require_once 'database.php';
 
-// Zabezpieczenie: tylko dla admina
 if (!isset($_SESSION['user_id']) || $_SESSION['user_rola'] !== 'admin') {
     die("Brak uprawnień. <a href='index.php'>Wróć do strony głównej</a>");
 }
 
 $komunikat = '';
 
-// --- 1. OBSŁUGA DODAWANIA NOWEGO SPEKTAKLU ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_spektakl'])) {
     $tytul = trim($_POST['tytul']);
     $opis = trim($_POST['opis']);
@@ -45,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_spektakl'])) {
     }
 }
 
-// --- 2. OBSŁUGA DODAWANIA SAMEGO TERMINU ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_termin'])) {
     $spektakl_id = (int)$_POST['spektakl_id'];
     $nowa_data = $_POST['nowa_data'];
@@ -59,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_termin'])) {
     }
 }
 
-// --- 3. OBSŁUGA DODAWANIA AKTORA ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_aktora'])) {
     $imie = trim($_POST['imie_nazwisko']);
     $spec = trim($_POST['specjalizacja']);
@@ -86,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dodaj_aktora'])) {
     }
 }
 
-// --- OBSŁUGA USUWANIA (GET) ---
 if (isset($_GET['usun_spektakl'])) {
     $id_do_usuniecia = (int)$_GET['usun_spektakl'];
     $pdo->prepare("DELETE FROM Spektakle WHERE id = ?")->execute([$id_do_usuniecia]);
@@ -113,15 +108,13 @@ if (isset($_GET['usun_uzytkownika'])) {
     $komunikat = "Użytkownik został usunięty.";
 }
 
-// --- POBIERANIE DANYCH DO WIDOKÓW ---
-// Statystyki
+
 $statOgokolne = $pdo->query("SELECT COUNT(r.id) as liczba_biletow, SUM(s.cena) as laczny_przychod FROM Rezerwacje r JOIN Terminy t ON r.termin_id = t.id JOIN Spektakle s ON t.spektakl_id = s.id")->fetch(PDO::FETCH_ASSOC);
 $liczba_biletow = $statOgokolne['liczba_biletow'] ?? 0;
 $laczny_przychod = $statOgokolne['laczny_przychod'] ?? 0;
 
 $topSpektakl = $pdo->query("SELECT s.tytul, COUNT(r.id) as sprzedane FROM Spektakle s LEFT JOIN Terminy t ON s.id = t.spektakl_id LEFT JOIN Rezerwacje r ON t.id = r.termin_id GROUP BY s.id, s.tytul ORDER BY sprzedane DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 
-// Listy
 $spektakle = $pdo->query("SELECT s.id as spektakl_id, s.tytul, s.cena, t.id as termin_id, t.data_wystawienia FROM Spektakle s JOIN Terminy t ON s.id = t.spektakl_id ORDER BY t.data_wystawienia ASC")->fetchAll(PDO::FETCH_ASSOC);
 $unikalne_spektakle = $pdo->query("SELECT id, tytul FROM Spektakle")->fetchAll(PDO::FETCH_ASSOC);
 $wszyscy_aktorzy = $pdo->query("SELECT * FROM Aktorzy ORDER BY imie_nazwisko ASC")->fetchAll(PDO::FETCH_ASSOC);
@@ -144,13 +137,10 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admina - Teatr Jura</title>
     <style>
-        /* --- STYLIZACJA SUWAKÓW (SCROLLBAR) --- */
-        /* Dla Firefoxa */
         * {
             scrollbar-width: thin;
             scrollbar-color: #444 #1a1a1a;
         }
-        /* Dla Chrome, Edge, Safari */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -222,7 +212,6 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
         td strong { color: #ffffff; }
 
  
-        /* Minimalistyczne akcje - tylko tekst */
         .btn-action { 
             display: inline-block; 
             text-decoration: none; 
@@ -244,7 +233,6 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
 
         .brak-danych { color: #aaaaaa; font-style: italic; }
 
-        /* RESPONSYWNOŚĆ MOBILNA */
         @media (max-width: 450px) {
             .top-bar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
             .top-bar div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
@@ -260,12 +248,10 @@ $rezerwacje = $pdo->query($sqlRezerwacje)->fetchAll(PDO::FETCH_ASSOC);
             .sekcja-aktorzy-kolumny .panel { overflow: hidden; }
             .sekcja-aktorzy-kolumny div[style] { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
 
-            /* Tabela teraz ma min-width, więc wymusi suwak zamiast się nakładać */
             table { font-size: 12px; }
             .panel:not(.aktorzy-lista) table { min-width: 500px; }
             th, td { padding: 10px 5px; }
             
-            /* Kontener tabeli musi mieć scroll */
             .panel div[style*="overflow-x: auto"] { overflow-x: auto; -webkit-overflow-scrolling: touch; }
             
             .btn-action { margin-right: 8px; font-size: 10px; }
